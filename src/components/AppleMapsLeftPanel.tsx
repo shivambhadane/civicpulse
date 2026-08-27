@@ -20,10 +20,13 @@ import {
   FileText,
   Map,
   BarChart3,
-  HelpCircle,
   LogOut,
+  User,
+  LogIn,
 } from 'lucide-react';
 import { Complaint, Category, Hotspot } from '@/types/database';
+import { useAuth } from '@/context/AuthContext';
+import { useRouter } from 'next/navigation';
 
 interface AppleMapsLeftPanelProps {
   complaints: Complaint[];
@@ -78,6 +81,9 @@ export default function AppleMapsLeftPanel({
   const [searchQuery, setSearchQuery] = useState('');
   const [showLocalityDropdown, setShowLocalityDropdown] = useState(false);
 
+  const { user, logout } = useAuth();
+  const router = useRouter();
+
   const filteredLocalities = POPULAR_LOCALITIES.filter((loc) =>
     loc.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -119,6 +125,11 @@ export default function AppleMapsLeftPanel({
     }
   };
 
+  const handleLogout = async () => {
+    await logout();
+    router.push('/login');
+  };
+
   if (isCollapsed) {
     return (
       <button
@@ -147,7 +158,9 @@ export default function AppleMapsLeftPanel({
             <h1 className="text-lg font-black font-display tracking-tight text-slate-900 leading-none">
               City Hub
             </h1>
-            <p className="text-xs text-slate-500 font-semibold mt-0.5">Official Portal</p>
+            <p className="text-xs text-slate-500 font-semibold mt-0.5">
+              {user ? user.displayName || user.email : 'Official Portal'}
+            </p>
           </div>
         </div>
 
@@ -360,14 +373,28 @@ export default function AppleMapsLeftPanel({
         </button>
 
         <div className="flex items-center justify-between text-xs text-slate-500 font-semibold px-2">
-          <button className="flex items-center gap-1.5 hover:text-slate-900 transition-colors">
-            <HelpCircle className="w-3.5 h-3.5" />
-            <span>Help</span>
-          </button>
-          <button className="flex items-center gap-1.5 hover:text-slate-900 transition-colors">
-            <LogOut className="w-3.5 h-3.5" />
-            <span>Logout</span>
-          </button>
+          <div className="flex items-center gap-1.5 text-slate-600 font-medium">
+            <User className="w-3.5 h-3.5 text-emerald-600" />
+            <span className="truncate max-w-[120px]">{user ? user.displayName || user.email : 'Guest'}</span>
+          </div>
+
+          {user ? (
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-1 text-slate-500 hover:text-rose-600 transition-colors"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              <span>Logout</span>
+            </button>
+          ) : (
+            <button
+              onClick={() => router.push('/login')}
+              className="flex items-center gap-1 text-emerald-600 hover:text-emerald-700 font-bold transition-colors"
+            >
+              <LogIn className="w-3.5 h-3.5" />
+              <span>Sign In</span>
+            </button>
+          )}
         </div>
       </div>
     </aside>

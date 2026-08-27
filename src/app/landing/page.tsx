@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { useAuth } from '@/context/AuthContext';
 import {
   MapPin,
   Sparkles,
@@ -9,9 +10,13 @@ import {
   Flame,
   Globe,
   Building2,
+  LogIn,
+  UserCheck,
 } from 'lucide-react';
 
 export default function LandingPage() {
+  const { user, logout } = useAuth();
+
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-emerald-500 selection:text-slate-950">
       {/* 1. Header Navigation */}
@@ -36,13 +41,36 @@ export default function LandingPage() {
             <Building2 className="w-4 h-4 text-amber-400" />
             <span>Official Portal</span>
           </Link>
-          <Link
-            href="/dashboard"
-            className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-lg shadow-emerald-600/20 transition-all hover:scale-105 flex items-center gap-2"
-          >
-            <span>Launch Citizen Portal</span>
-            <ArrowRight className="w-4 h-4" />
-          </Link>
+
+          {user ? (
+            <div className="flex items-center gap-3">
+              <div className="hidden sm:flex items-center gap-2 text-xs text-slate-300 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-xl font-medium">
+                <UserCheck className="w-4 h-4 text-emerald-400" />
+                <span className="truncate max-w-[120px]">{user.displayName || user.email}</span>
+              </div>
+              <Link
+                href="/dashboard"
+                className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-lg shadow-emerald-600/20 transition-all hover:scale-105 flex items-center gap-2"
+              >
+                <span>Dashboard</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+              <button
+                onClick={logout}
+                className="text-xs text-slate-400 hover:text-rose-400 font-semibold px-2 py-1"
+              >
+                Logout
+              </button>
+            </div>
+          ) : (
+            <Link
+              href="/login"
+              className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-lg shadow-emerald-600/20 transition-all hover:scale-105 flex items-center gap-2"
+            >
+              <LogIn className="w-4 h-4" />
+              <span>Sign In / Register</span>
+            </Link>
+          )}
         </div>
       </header>
 
@@ -66,11 +94,11 @@ export default function LandingPage() {
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
           <Link
-            href="/dashboard"
+            href={user ? "/dashboard" : "/login"}
             className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm shadow-xl shadow-emerald-600/30 transition-all hover:scale-105 flex items-center justify-center gap-2"
           >
             <Globe className="w-5 h-5" />
-            <span>Open Citizen Dashboard</span>
+            <span>{user ? "Open Citizen Dashboard" : "Get Started via Firebase Login"}</span>
           </Link>
 
           <Link

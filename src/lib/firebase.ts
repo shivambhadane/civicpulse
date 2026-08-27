@@ -1,5 +1,6 @@
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getAnalytics, isSupported, Analytics } from 'firebase/analytics';
+import { getAuth, GoogleAuthProvider } from 'firebase/auth';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "AIzaSyD9XQ54GLyINIcUFH5OJGNlveM3e4K551Y",
@@ -14,6 +15,10 @@ const firebaseConfig = {
 // Initialize Firebase App singleton for Next.js SSR
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 
+// Auth singleton
+const auth = getAuth(app);
+const googleProvider = new GoogleAuthProvider();
+
 // Analytics singleton (only initialized on browser client)
 let analytics: Analytics | null = null;
 
@@ -27,4 +32,4 @@ if (typeof window !== 'undefined') {
   });
 }
 
-export { app, analytics };
+export { app, auth, googleProvider, analytics };
