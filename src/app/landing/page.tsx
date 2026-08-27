@@ -355,27 +355,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* 5. Trusted Partners / Government & Tech Logos Strip (Exact Dub.co Image Row 3) */}
-      <section className="border-y border-slate-200/80 bg-white py-12 px-6">
-        <div className="max-w-6xl mx-auto space-y-6 text-center">
-          <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">
-            POWERED BY MODERN TECH & CIVIC INFRASTRUCTURE
-          </p>
-
-          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-6 items-center justify-items-center opacity-70 grayscale hover:grayscale-0 transition-all font-mono text-xs font-extrabold text-slate-800">
-            <span>MAPBOX</span>
-            <span>OPENAI</span>
-            <span>SUPABASE</span>
-            <span>NEXT.JS</span>
-            <span>TAILWIND</span>
-            <span>FIREBASE</span>
-            <span>VERCEL</span>
-            <span>PUNE PMC</span>
-          </div>
-        </div>
-      </section>
-
-      {/* 6. Section 2 Header (Matching exact image headline: "Marketing isn't just about clicks. It's about outcomes.") */}
+      {/* 5. Section 2 Header (Matching exact image headline: "Marketing isn't just about clicks. It's about outcomes.") */}
       <section className="py-24 px-6 max-w-4xl mx-auto text-center space-y-6">
         <h2 className="text-4xl sm:text-5xl font-black font-display text-slate-950 leading-tight">
           Civic reporting isn&apos;t just about complaints. <br />
@@ -386,7 +366,7 @@ export default function LandingPage() {
         </p>
       </section>
 
-      {/* 7. Bottom Action Banner & Footer */}
+      {/* 6. Bottom Action Banner */}
       <section className="pb-20 px-6 max-w-5xl mx-auto">
         <div className="bg-slate-950 text-white rounded-[2.5rem] p-10 sm:p-14 text-center space-y-6 shadow-2xl relative overflow-hidden">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-bold">
@@ -410,7 +390,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* 8. Modern Minimal Footer */}
+      {/* 7. Modern Minimal Footer */}
       <footer className="border-t border-slate-200 bg-white py-12 px-6 text-xs text-slate-600 font-medium">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
