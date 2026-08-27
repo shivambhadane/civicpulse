@@ -26,6 +26,12 @@ import {
   Radio,
 } from 'lucide-react';
 
+declare global {
+  interface Window {
+    gm_authFailure?: () => void;
+  }
+}
+
 interface GoogleMapViewProps {
   complaints: Complaint[];
   hotspots: Hotspot[];
@@ -101,7 +107,10 @@ function DynamicCanvasMapView({
 
   // Pan Handlers
   const handleMouseDown = (e: React.MouseEvent) => {
-    if ((e.target as HTMLElement).closest('.interactive-popup') || (e.target as HTMLElement).closest('.map-control-btn')) {
+    if (
+      (e.target as HTMLElement).closest('.interactive-popup') ||
+      (e.target as HTMLElement).closest('.map-control-btn')
+    ) {
       return;
     }
     setIsDragging(true);
@@ -161,10 +170,6 @@ function DynamicCanvasMapView({
               <path d="M 60 0 L 0 0 0 60" fill="none" stroke="rgba(56, 189, 248, 0.12)" strokeWidth="1" />
               <circle cx="0" cy="0" r="1.5" fill="rgba(56, 189, 248, 0.3)" />
             </pattern>
-            <radialGradient id="radarSweep" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="rgba(6, 182, 212, 0.15)" />
-              <stop offset="100%" stopColor="rgba(6, 182, 212, 0)" />
-            </radialGradient>
           </defs>
           <rect width="100%" height="100%" fill="url(#gridPattern)" />
           {/* Simulated River / Transport Arteries */}
@@ -363,11 +368,30 @@ function DynamicCanvasMapView({
 
 export default function GoogleMapView(props: GoogleMapViewProps) {
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-
+  const [hasMapError, setHasMapError] = useState(false);
   const [activePopup, setActivePopup] = useState<Complaint | null>(null);
 
-  // If Google Maps API Key is not set or empty, fallback to the interactive dynamic canvas vector map!
-  if (!apiKey || apiKey.trim() === '') {
+  // Catch Google Maps API auth failure event
+  useEffect(() => {
+    const handleAuthFailure = () => {
+      console.warn('Google Maps API authentication error. Falling back to dynamic vector map engine.');
+      setHasMapError(true);
+    };
+
+    window.gm_authFailure = handleAuthFailure;
+    return () => {
+      delete window.gm_authFailure;
+    };
+  }, []);
+
+  const isValidGoogleKey = (key?: string) => {
+    if (!key || key.trim() === '') return false;
+    if (key.includes('your_') || key.includes('YOUR_') || key.includes('placeholder')) return false;
+    return key.startsWith('AIza') && key.length > 20;
+  };
+
+  // Fallback to Dynamic Vector Canvas Map if key is invalid, missing, or throws Google Maps auth error!
+  if (hasMapError || !isValidGoogleKey(apiKey)) {
     return <DynamicCanvasMapView {...props} />;
   }
 
@@ -390,7 +414,7 @@ export default function GoogleMapView(props: GoogleMapViewProps) {
 
   return (
     <div className="relative w-full h-full overflow-hidden bg-slate-950">
-      <APIProvider apiKey={apiKey}>
+      <APIProvider apiKey={apiKey!}>
         <Map
           mapId="DEMO_MAP_ID"
           defaultCenter={{
