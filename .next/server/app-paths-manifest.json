@@ -1,3 +1,16 @@
 {
-  "/page": "app/page.js"
+  "/page": "app/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/ai/classify/route": "app/api/ai/classify/route.js",
+  "/api/ai/route/route": "app/api/ai/route/route.js",
+  "/api/ai/similar/route": "app/api/ai/similar/route.js",
+  "/api/categories/route": "app/api/categories/route.js",
+  "/api/complaints/[id]/route": "app/api/complaints/[id]/route.js",
+  "/api/complaints/[id]/support/route": "app/api/complaints/[id]/support/route.js",
+  "/api/complaints/nearby/route": "app/api/complaints/nearby/route.js",
+  "/api/complaints/route": "app/api/complaints/route.js",
+  "/api/departments/route": "app/api/departments/route.js",
+  "/api/hotspots/route": "app/api/hotspots/route.js",
+  "/api/upload/route": "app/api/upload/route.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js"
 }

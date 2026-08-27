@@ -221,7 +221,7 @@ export default function HomePage() {
       {/* 4. List View Overlay Panel (When View Mode is List) */}
       {viewMode === 'list' && (
         <div className="fixed inset-y-4 right-4 left-4 sm:left-[420px] z-20 overflow-hidden pointer-events-auto animate-in fade-in zoom-in-95 duration-200">
-          <div className="h-full bg-[#12141d]/95 backdrop-blur-2xl border border-white/10 rounded-[30px] shadow-2xl overflow-y-auto p-5">
+          <div className="h-full bg-white/95 backdrop-blur-2xl border border-slate-200/90 rounded-[30px] shadow-2xl overflow-y-auto p-5">
             <ListView
               complaints={filteredComplaints}
               onSelectComplaint={(c) => {

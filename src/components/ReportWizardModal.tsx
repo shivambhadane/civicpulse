@@ -5,6 +5,7 @@ import { X, MapPin, Upload, Sparkles, AlertCircle, ChevronRight, ArrowLeft, Load
 import LocationPickerModal from './LocationPickerModal';
 import { Category, Department, SeverityLevel } from '@/types/database';
 import { AIClassificationResult, AIDepartmentRoutingResult } from '@/types/ai';
+import Image from 'next/image';
 
 interface ReportWizardModalProps {
   isOpen: boolean;
@@ -117,10 +118,10 @@ export default function ReportWizardModal({
       setAiRouting(aiRoute);
 
       // Pre-set user selection state from AI suggestions
-      const matchedCat = categories.find(c => c.slug === aiClass.category_slug) || categories[0];
+      const matchedCat = categories.find((c) => c.slug === aiClass.category_slug) || categories[0];
       setSelectedCategoryId(matchedCat?.id || categories[0]?.id || '');
       setSelectedSeverity(aiClass.severity);
-      const matchedDept = departments.find(d => d.code === aiRoute.department_code) || departments[0];
+      const matchedDept = departments.find((d) => d.code === aiRoute.department_code) || departments[0];
       setSelectedDepartmentId(matchedDept?.id || departments[0]?.id || '');
 
       setIsAiAnalyzing(false);
@@ -137,7 +138,11 @@ export default function ReportWizardModal({
   };
 
   const resDataJson = async (res: Response) => {
-    try { return await res.json(); } catch { return null; }
+    try {
+      return await res.json();
+    } catch {
+      return null;
+    }
   };
 
   // Step 3 -> Final Submission
@@ -179,42 +184,42 @@ export default function ReportWizardModal({
 
   return (
     <>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
-        <div className="relative w-full max-w-2xl glass-panel rounded-3xl border border-slate-700 shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md">
+        <div className="relative w-full max-w-2xl bg-white/95 backdrop-blur-2xl rounded-3xl border border-slate-200 shadow-2xl overflow-hidden flex flex-col max-h-[92vh] text-slate-900 font-sans">
           {/* Header & Step Indicator */}
-          <div className="px-6 py-4 border-b border-slate-800 bg-slate-900/80 flex items-center justify-between">
+          <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/80 flex items-center justify-between">
             <div>
-              <h3 className="text-base font-bold text-white flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-cyan-400" />
+              <h3 className="text-base font-bold font-display text-slate-900 flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-emerald-600" />
                 Report Civic Infrastructure Issue
               </h3>
-              <p className="text-xs text-slate-400">AI-assisted reporting wizard for prompt municipal action</p>
+              <p className="text-xs text-slate-500 font-medium">AI-assisted reporting wizard for prompt municipal action</p>
             </div>
-            <button onClick={onClose} className="p-1.5 rounded-xl hover:bg-slate-800 text-slate-400 hover:text-white">
+            <button onClick={onClose} className="p-1.5 rounded-xl hover:bg-slate-200 text-slate-500 hover:text-slate-900 transition-colors">
               <X className="w-5 h-5" />
             </button>
           </div>
 
           {/* Step Progress Bar */}
-          <div className="px-6 py-3 bg-slate-950/50 border-b border-slate-800/80 flex items-center justify-between text-xs">
-            <div className={`flex items-center gap-2 ${step >= 1 ? 'text-cyan-400 font-bold' : 'text-slate-500'}`}>
-              <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${step >= 1 ? 'bg-cyan-500 text-slate-950 font-bold' : 'bg-slate-800'}`}>
+          <div className="px-6 py-3 bg-slate-50 border-b border-slate-100 flex items-center justify-between text-xs">
+            <div className={`flex items-center gap-2 ${step >= 1 ? 'text-emerald-700 font-bold' : 'text-slate-400'}`}>
+              <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${step >= 1 ? 'bg-emerald-600 text-white font-bold' : 'bg-slate-200'}`}>
                 1
               </span>
               <span>Location</span>
             </div>
-            <div className={`h-0.5 flex-1 mx-3 ${step >= 2 ? 'bg-cyan-500' : 'bg-slate-800'}`} />
+            <div className={`h-0.5 flex-1 mx-3 ${step >= 2 ? 'bg-emerald-600' : 'bg-slate-200'}`} />
 
-            <div className={`flex items-center gap-2 ${step >= 2 ? 'text-cyan-400 font-bold' : 'text-slate-500'}`}>
-              <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${step >= 2 ? 'bg-cyan-500 text-slate-950 font-bold' : 'bg-slate-800'}`}>
+            <div className={`flex items-center gap-2 ${step >= 2 ? 'text-emerald-700 font-bold' : 'text-slate-400'}`}>
+              <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${step >= 2 ? 'bg-emerald-600 text-white font-bold' : 'bg-slate-200'}`}>
                 2
               </span>
               <span>Details & Photo</span>
             </div>
-            <div className={`h-0.5 flex-1 mx-3 ${step >= 3 ? 'bg-cyan-500' : 'bg-slate-800'}`} />
+            <div className={`h-0.5 flex-1 mx-3 ${step >= 3 ? 'bg-emerald-600' : 'bg-slate-200'}`} />
 
-            <div className={`flex items-center gap-2 ${step >= 3 ? 'text-cyan-400 font-bold' : 'text-slate-500'}`}>
-              <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${step >= 3 ? 'bg-cyan-500 text-slate-950 font-bold' : 'bg-slate-800'}`}>
+            <div className={`flex items-center gap-2 ${step >= 3 ? 'text-emerald-700 font-bold' : 'text-slate-400'}`}>
+              <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${step >= 3 ? 'bg-emerald-600 text-white font-bold' : 'bg-slate-200'}`}>
                 3
               </span>
               <span>AI Review</span>
@@ -226,28 +231,28 @@ export default function ReportWizardModal({
             {/* STEP 1: LOCATION SELECTION */}
             {step === 1 && (
               <div className="space-y-4">
-                <div className="glass-panel p-4 rounded-2xl border border-slate-800">
+                <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-bold text-cyan-400 uppercase tracking-wider flex items-center gap-1.5">
-                      <MapPin className="w-4 h-4" />
+                    <span className="text-xs font-bold text-emerald-700 uppercase tracking-wider flex items-center gap-1.5">
+                      <MapPin className="w-4 h-4 text-emerald-600" />
                       Selected Pin-Drop Coordinates
                     </span>
                     <button
                       onClick={() => setIsLocationPickerOpen(true)}
-                      className="px-3 py-1.5 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 text-xs font-semibold transition-colors"
+                      className="px-3 py-1.5 rounded-xl bg-emerald-100 hover:bg-emerald-200 text-emerald-800 text-xs font-bold transition-colors"
                     >
                       Change Pin on Map
                     </button>
                   </div>
 
-                  <p className="text-sm font-semibold text-white">{locationName}</p>
-                  <p className="text-xs text-slate-400 mt-1 font-mono">
+                  <p className="text-sm font-bold text-slate-900">{locationName}</p>
+                  <p className="text-xs text-slate-500 mt-1 font-mono">
                     Lat: {lat.toFixed(5)}, Lng: {lng.toFixed(5)}
                   </p>
                 </div>
 
-                <div className="text-xs text-slate-400 bg-slate-900/40 p-3.5 rounded-xl border border-slate-800 flex items-start gap-2">
-                  <AlertCircle className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
+                <div className="text-xs text-slate-600 bg-amber-50/80 p-3.5 rounded-xl border border-amber-200 flex items-start gap-2 font-medium">
+                  <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
                   <span>
                     Precise coordinates help PostGIS perform exact 300m radius duplicate checks and allow municipal field crews to locate the defect easily.
                   </span>
@@ -260,42 +265,42 @@ export default function ReportWizardModal({
               <div className="space-y-4">
                 {/* Description Input */}
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
                     Problem Description *
                   </label>
                   <textarea
                     rows={4}
                     value={description}
-                    onChange={e => setDescription(e.target.value)}
+                    onChange={(e) => setDescription(e.target.value)}
                     placeholder="Describe the issue clearly (e.g., Deep pothole near bus stop causing severe traffic backup)..."
-                    className="w-full bg-slate-900/80 border border-slate-700 rounded-xl p-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 font-medium"
                   />
                 </div>
 
                 {/* Photo Upload */}
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
                     Attach Photo Evidence (Optional)
                   </label>
                   {imageUrl ? (
-                    <div className="relative rounded-2xl overflow-hidden border border-slate-700 h-40 group">
-                      <img src={imageUrl} alt="Complaint Evidence" className="w-full h-full object-cover" />
+                    <div className="relative rounded-2xl overflow-hidden border border-slate-200 h-40 group">
+                      <Image src={imageUrl} alt="Complaint Evidence" fill className="object-cover" />
                       <button
                         onClick={() => setImageUrl('')}
-                        className="absolute top-2 right-2 p-1.5 rounded-full bg-slate-950/80 text-rose-400 hover:bg-rose-950 transition-colors"
+                        className="absolute top-2 right-2 p-1.5 rounded-full bg-slate-900/80 text-white hover:bg-rose-600 transition-colors z-10"
                       >
                         <X className="w-4 h-4" />
                       </button>
                     </div>
                   ) : (
-                    <label className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-slate-700 hover:border-cyan-500/50 rounded-2xl bg-slate-900/40 cursor-pointer transition-colors">
+                    <label className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-slate-300 hover:border-emerald-500 rounded-2xl bg-slate-50 cursor-pointer transition-colors">
                       {isUploading ? (
-                        <Loader2 className="w-6 h-6 text-cyan-400 animate-spin" />
+                        <Loader2 className="w-6 h-6 text-emerald-600 animate-spin" />
                       ) : (
                         <>
                           <Upload className="w-6 h-6 text-slate-400 mb-2" />
-                          <span className="text-xs font-semibold text-slate-300">Click to upload photo evidence</span>
-                          <span className="text-[10px] text-slate-500 mt-1">JPEG, PNG, WEBP up to 5 MB</span>
+                          <span className="text-xs font-bold text-slate-700">Click to upload photo evidence</span>
+                          <span className="text-[10px] text-slate-400 mt-1">JPEG, PNG, WEBP up to 5 MB</span>
                         </>
                       )}
                       <input type="file" accept="image/*" onChange={handlePhotoUpload} className="hidden" />
@@ -305,44 +310,44 @@ export default function ReportWizardModal({
               </div>
             )}
 
-            {/* STEP 3: AI REVIEW SCREEN (Screen 04) */}
+            {/* STEP 3: AI REVIEW SCREEN */}
             {step === 3 && (
               <div className="space-y-4">
                 {/* AI Confidence Badge */}
-                <div className="glass-panel p-3.5 rounded-2xl border border-cyan-500/30 bg-cyan-950/20 flex items-center justify-between">
+                <div className="p-3.5 rounded-2xl border border-emerald-200 bg-emerald-50 flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-cyan-400 animate-pulse" />
-                    <span className="text-xs font-bold text-cyan-300">AI Advisor Inference Complete</span>
+                    <Sparkles className="w-4 h-4 text-emerald-600 animate-pulse" />
+                    <span className="text-xs font-bold text-emerald-900">AI Advisor Inference Complete</span>
                   </div>
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-400 border border-cyan-500/40">
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">
                     {Math.round((aiRouting?.confidence_score || 0.94) * 100)}% Confidence
                   </span>
                 </div>
 
                 {/* Editable Title */}
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
                     Issue Title Summary
                   </label>
                   <input
                     type="text"
                     value={title}
-                    onChange={e => setTitle(e.target.value)}
-                    className="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white font-semibold focus:border-cyan-500"
+                    onChange={(e) => setTitle(e.target.value)}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-900 font-bold focus:border-emerald-500"
                   />
                 </div>
 
                 {/* Category Override Dropdown */}
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
                     Category (AI Recommended — Click to Override)
                   </label>
                   <select
                     value={selectedCategoryId}
-                    onChange={e => setSelectedCategoryId(e.target.value)}
-                    className="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 focus:border-cyan-500"
+                    onChange={(e) => setSelectedCategoryId(e.target.value)}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 font-medium focus:border-emerald-500"
                   >
-                    {categories.map(cat => (
+                    {categories.map((cat) => (
                       <option key={cat.id} value={cat.id}>
                         {cat.name}
                       </option>
@@ -352,11 +357,11 @@ export default function ReportWizardModal({
 
                 {/* Severity Badge Picker */}
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
                     Severity Rating (AI Assessed)
                   </label>
                   <div className="grid grid-cols-4 gap-2">
-                    {(['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'] as SeverityLevel[]).map(sev => (
+                    {(['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'] as SeverityLevel[]).map((sev) => (
                       <button
                         key={sev}
                         type="button"
@@ -364,13 +369,13 @@ export default function ReportWizardModal({
                         className={`py-2 rounded-xl text-xs font-bold border transition-all ${
                           selectedSeverity === sev
                             ? sev === 'CRITICAL'
-                              ? 'bg-rose-600 text-white border-rose-400 shadow-lg shadow-rose-600/30'
+                              ? 'bg-rose-600 text-white border-rose-400 shadow-md shadow-rose-600/20'
                               : sev === 'HIGH'
-                              ? 'bg-orange-600 text-white border-orange-400 shadow-lg shadow-orange-600/30'
+                              ? 'bg-amber-600 text-white border-amber-400 shadow-md shadow-amber-600/20'
                               : sev === 'MEDIUM'
-                              ? 'bg-amber-600 text-white border-amber-400 shadow-lg shadow-amber-600/30'
-                              : 'bg-blue-600 text-white border-blue-400 shadow-lg shadow-blue-600/30'
-                            : 'bg-slate-900/60 text-slate-400 border-slate-800 hover:text-slate-200'
+                              ? 'bg-emerald-600 text-white border-emerald-400 shadow-md shadow-emerald-600/20'
+                              : 'bg-blue-600 text-white border-blue-400 shadow-md shadow-blue-600/20'
+                            : 'bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200'
                         }`}
                       >
                         {sev}
@@ -380,14 +385,14 @@ export default function ReportWizardModal({
                 </div>
 
                 {/* Department Recommendation Card */}
-                <div className="glass-panel p-3.5 rounded-2xl border border-slate-800 bg-slate-900/60">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                <div className="p-3.5 rounded-2xl border border-slate-200 bg-slate-50">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
                     Recommended Municipal Department
                   </span>
-                  <p className="text-xs font-bold text-cyan-300 mt-0.5">
+                  <p className="text-xs font-bold text-emerald-800 mt-0.5">
                     {aiRouting?.department_name || 'Roads & Maintenance Department'}
                   </p>
-                  <p className="text-[11px] text-slate-400 mt-1 italic">
+                  <p className="text-[11px] text-slate-500 mt-1 italic">
                     &quot;{aiRouting?.reasoning || 'Matched based on complaint classification and jurisdiction bounds.'}&quot;
                   </p>
                 </div>
@@ -396,11 +401,11 @@ export default function ReportWizardModal({
           </div>
 
           {/* Footer Controls */}
-          <div className="p-5 border-t border-slate-800 bg-slate-900/90 flex items-center justify-between">
+          <div className="p-5 border-t border-slate-100 bg-slate-50/80 flex items-center justify-between">
             {step > 1 ? (
               <button
                 onClick={() => setStep((step - 1) as 1 | 2)}
-                className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:bg-slate-800 flex items-center gap-1 transition-colors"
+                className="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-200 flex items-center gap-1 transition-colors"
               >
                 <ArrowLeft className="w-4 h-4" />
                 Back
@@ -416,7 +421,7 @@ export default function ReportWizardModal({
                   else if (step === 2) handleProceedToAiReview();
                 }}
                 disabled={step === 2 && (!description || description.trim().length < 5 || isAiAnalyzing)}
-                className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 disabled:opacity-50 text-xs font-bold text-white shadow-lg shadow-cyan-500/25 flex items-center gap-1.5 transition-all"
+                className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-xs font-bold text-white shadow-lg shadow-emerald-600/20 flex items-center gap-1.5 transition-all"
               >
                 {isAiAnalyzing ? (
                   <>
@@ -434,7 +439,7 @@ export default function ReportWizardModal({
               <button
                 onClick={handleSubmitFinal}
                 disabled={isSubmitting}
-                className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-xs font-bold text-slate-950 shadow-lg shadow-emerald-500/25 flex items-center gap-1.5 transition-all"
+                className="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-xs font-bold text-white shadow-lg shadow-emerald-600/20 flex items-center gap-1.5 transition-all"
               >
                 {isSubmitting ? (
                   <Loader2 className="w-4 h-4 animate-spin" />

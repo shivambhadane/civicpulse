@@ -77,35 +77,35 @@ export default function AppleMapsLeftPanel({
   const getSeverityBadge = (c: Complaint) => {
     if (c.status === 'RESOLVED') {
       return (
-        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
-          <CheckCircle2 className="w-3 h-3" /> RESOLVED
+        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700 border border-emerald-200 flex items-center gap-1">
+          <CheckCircle2 className="w-3 h-3 text-emerald-600" /> Resolved
         </span>
       );
     }
     switch (c.severity) {
       case 'CRITICAL':
         return (
-          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30 flex items-center gap-1">
-            <AlertCircle className="w-3 h-3 text-rose-400" /> CRITICAL
+          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-700 border border-rose-200 flex items-center gap-1">
+            <AlertCircle className="w-3 h-3 text-rose-600" /> Critical
           </span>
         );
       case 'HIGH':
         return (
-          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-orange-500/20 text-orange-300 border border-orange-500/30">
-            HIGH
+          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200">
+            Pending
           </span>
         );
       case 'MEDIUM':
         return (
-          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
-            MEDIUM
+          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
+            Medium
           </span>
         );
       case 'LOW':
       default:
         return (
-          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
-            LOW
+          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-200">
+            Low
           </span>
         );
     }
@@ -115,51 +115,47 @@ export default function AppleMapsLeftPanel({
     return (
       <button
         onClick={() => setIsCollapsed(false)}
-        className="fixed left-4 top-6 z-30 p-3.5 rounded-2xl bg-[#13151f]/90 backdrop-blur-2xl border border-white/10 text-white shadow-2xl hover:bg-slate-800 transition-all pointer-events-auto flex items-center gap-2 font-medium text-xs"
+        className="fixed left-4 top-6 z-30 p-3.5 rounded-2xl bg-white/95 backdrop-blur-2xl border border-slate-200/90 text-slate-900 shadow-xl hover:bg-slate-50 transition-all pointer-events-auto flex items-center gap-2.5 font-medium text-xs"
         title="Expand Left Navigation Panel"
       >
-        <div className="w-6 h-6 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center">
-          <MapPin className="w-3.5 h-3.5" />
+        <div className="w-7 h-7 rounded-xl bg-emerald-500 text-white flex items-center justify-center shadow-sm">
+          <MapPin className="w-4 h-4" />
         </div>
-        <span className="font-bold font-display">Civic Pulse</span>
+        <span className="font-bold font-display text-slate-900">City Hub</span>
         <ChevronRight className="w-4 h-4 text-slate-400" />
       </button>
     );
   }
 
   return (
-    <aside className="fixed left-4 top-4 bottom-4 w-full max-w-[360px] sm:max-w-[390px] z-30 bg-[#12141d]/95 backdrop-blur-2xl border border-white/10 shadow-2xl rounded-[30px] flex flex-col text-slate-100 overflow-hidden pointer-events-auto transition-all duration-300">
-      {/* 1. Header with Collapse Toggle */}
-      <div className="p-4 border-b border-slate-800/80 flex items-center justify-between">
+    <aside className="fixed left-4 top-4 bottom-4 w-full max-w-[360px] sm:max-w-[380px] z-30 bg-white/95 backdrop-blur-2xl border border-slate-200/90 shadow-2xl rounded-[30px] flex flex-col text-slate-900 overflow-hidden pointer-events-auto transition-all duration-300">
+      {/* 1. White Header with Green Accent Icon */}
+      <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
         <div className="flex items-center gap-3">
-          <div className="relative w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-600 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/20">
-            <MapPin className="w-4 h-4 text-white" />
-            <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-cyan-500"></span>
-            </span>
+          <div className="w-9 h-9 rounded-xl bg-emerald-500 text-white flex items-center justify-center shadow-md shadow-emerald-500/20">
+            <MapPin className="w-5 h-5" />
           </div>
           <div>
-            <h1 className="text-base font-bold font-display tracking-tight text-white flex items-center gap-2 leading-none">
-              Civic Pulse
-              <span className="text-[9px] uppercase font-semibold px-1.5 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
-                AI Map
+            <h1 className="text-base font-bold font-display tracking-tight text-slate-900 flex items-center gap-2 leading-none">
+              City Hub
+              <span className="text-[9px] uppercase font-semibold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
+                Portal
               </span>
             </h1>
-            <p className="text-[11px] text-slate-400 mt-1">Indian Civic Grievances</p>
+            <p className="text-[11px] text-slate-500 mt-1 font-medium">Official Civic Grievances</p>
           </div>
         </div>
 
         <button
           onClick={() => setIsCollapsed(true)}
-          className="p-2 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
+          className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-900 transition-colors"
           title="Collapse Panel"
         >
           <ChevronLeft className="w-4 h-4" />
         </button>
       </div>
 
-      {/* 2. Location Search Bar (Apple Maps Input Style) */}
+      {/* 2. Light Search Input */}
       <div className="p-3 pb-2 relative">
         <div className="relative">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -172,17 +168,17 @@ export default function AppleMapsLeftPanel({
               setShowLocalityDropdown(true);
             }}
             onFocus={() => setShowLocalityDropdown(true)}
-            className="w-full bg-slate-900/90 border border-slate-800 rounded-2xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-cyan-500/60 focus:ring-2 focus:ring-cyan-500/20 transition-all"
+            className="w-full bg-slate-100/90 border border-slate-200 rounded-2xl pl-10 pr-4 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all font-medium"
           />
         </div>
 
-        {/* Locality Autocomplete Popup */}
+        {/* Locality Autocomplete Dropdown */}
         {showLocalityDropdown && (
-          <div className="absolute left-3 right-3 top-full mt-1.5 bg-[#181a26] border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden z-50">
-            <div className="px-3 py-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-wider bg-slate-900/80">
+          <div className="absolute left-3 right-3 top-full mt-1.5 bg-white border border-slate-200 rounded-2xl shadow-2xl overflow-hidden z-50">
+            <div className="px-3 py-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider bg-slate-50">
               Popular Localities
             </div>
-            <div className="max-h-40 overflow-y-auto divide-y divide-slate-800/60">
+            <div className="max-h-40 overflow-y-auto divide-y divide-slate-100">
               {filteredLocalities.map((loc, idx) => (
                 <button
                   key={idx}
@@ -191,13 +187,13 @@ export default function AppleMapsLeftPanel({
                     setSearchQuery(loc.name);
                     setShowLocalityDropdown(false);
                   }}
-                  className="w-full text-left px-3 py-2 text-xs text-slate-200 hover:bg-cyan-500/10 hover:text-cyan-400 flex items-center justify-between transition-colors"
+                  className="w-full text-left px-3 py-2 text-xs text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 flex items-center justify-between transition-colors"
                 >
-                  <span className="flex items-center gap-2">
-                    <MapPin className="w-3.5 h-3.5 text-cyan-400" />
+                  <span className="flex items-center gap-2 font-medium">
+                    <MapPin className="w-3.5 h-3.5 text-emerald-600" />
                     {loc.name}
                   </span>
-                  <span className="text-[10px] text-slate-500">Jump</span>
+                  <span className="text-[10px] text-slate-400">Jump</span>
                 </button>
               ))}
             </div>
@@ -205,26 +201,26 @@ export default function AppleMapsLeftPanel({
         )}
       </div>
 
-      {/* 3. Primary Action CTA Button */}
+      {/* 3. Green Report Button (Matching Screenshot "+ Report Issue") */}
       <div className="px-3 py-1.5">
         <button
           onClick={onOpenReportWizard}
-          className="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold text-xs shadow-lg shadow-cyan-500/25 flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98]"
+          className="w-full py-3 px-4 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2 transition-all hover:scale-[1.01] active:scale-[0.99]"
         >
           <PlusCircle className="w-4 h-4" />
-          <span>Report Civic Issue</span>
+          <span>Report Issue</span>
         </button>
       </div>
 
-      {/* 4. Category Filter Pills */}
-      <div className="px-3 py-2 border-b border-slate-800/80 space-y-2">
+      {/* 4. Minimal Filter Category Chips */}
+      <div className="px-3 py-2 border-b border-slate-100 space-y-2">
         <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1">
           <button
             onClick={() => onSelectCategory('all')}
-            className={`px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all ${
+            className={`px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all ${
               selectedCategory === 'all'
-                ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20'
-                : 'bg-slate-900/80 text-slate-300 hover:bg-slate-800'
+                ? 'bg-slate-900 text-white shadow-sm'
+                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
             }`}
           >
             All Categories
@@ -235,8 +231,8 @@ export default function AppleMapsLeftPanel({
               onClick={() => onSelectCategory(cat.slug)}
               className={`px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap flex items-center gap-1.5 transition-all ${
                 selectedCategory === cat.slug
-                  ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20'
-                  : 'bg-slate-900/80 text-slate-300 hover:bg-slate-800'
+                  ? 'bg-slate-900 text-white shadow-sm'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
               }`}
             >
               {CATEGORY_ICONS[cat.slug] || <Filter className="w-3 h-3" />}
@@ -246,28 +242,28 @@ export default function AppleMapsLeftPanel({
         </div>
 
         {/* Status Pills */}
-        <div className="flex items-center justify-between text-xs text-slate-400 pt-1">
+        <div className="flex items-center justify-between text-xs text-slate-500 pt-1">
           <div className="flex items-center gap-1">
             <button
               onClick={() => onSelectStatus('all')}
-              className={`px-2.5 py-1 rounded-xl text-[11px] font-medium transition-colors ${
-                selectedStatus === 'all' ? 'bg-slate-800 text-cyan-300' : 'hover:text-slate-200'
+              className={`px-2.5 py-1 rounded-xl text-[11px] font-semibold transition-colors ${
+                selectedStatus === 'all' ? 'bg-slate-200 text-slate-900' : 'hover:text-slate-900'
               }`}
             >
               All Status
             </button>
             <button
               onClick={() => onSelectStatus('open')}
-              className={`px-2.5 py-1 rounded-xl text-[11px] font-medium transition-colors ${
-                selectedStatus === 'open' ? 'bg-slate-800 text-cyan-300' : 'hover:text-slate-200'
+              className={`px-2.5 py-1 rounded-xl text-[11px] font-semibold transition-colors ${
+                selectedStatus === 'open' ? 'bg-slate-200 text-slate-900' : 'hover:text-slate-900'
               }`}
             >
-              Open
+              Pending
             </button>
             <button
               onClick={() => onSelectStatus('resolved')}
-              className={`px-2.5 py-1 rounded-xl text-[11px] font-medium transition-colors ${
-                selectedStatus === 'resolved' ? 'bg-slate-800 text-emerald-300' : 'hover:text-slate-200'
+              className={`px-2.5 py-1 rounded-xl text-[11px] font-semibold transition-colors ${
+                selectedStatus === 'resolved' ? 'bg-emerald-100 text-emerald-800' : 'hover:text-slate-900'
               }`}
             >
               Resolved
@@ -278,21 +274,21 @@ export default function AppleMapsLeftPanel({
             onClick={onToggleHotspots}
             className={`flex items-center gap-1 px-2.5 py-1 rounded-xl text-[11px] font-bold transition-all ${
               showHotspots
-                ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
-                : 'bg-slate-900 text-slate-500'
+                ? 'bg-rose-100 text-rose-700 border border-rose-200'
+                : 'bg-slate-100 text-slate-400'
             }`}
           >
-            <Flame className="w-3 h-3 text-rose-400" />
+            <Flame className="w-3 h-3 text-rose-600" />
             <span>Hotspots</span>
           </button>
         </div>
       </div>
 
-      {/* 5. Scrollable Active Issue Cards Feed (Apple Maps Route List Style) */}
-      <div className="flex-1 overflow-y-auto p-3 space-y-2.5 divide-y divide-slate-800/40">
-        <div className="flex items-center justify-between text-[11px] font-semibold text-slate-400 px-1 pt-1">
-          <span>NEARBY GRIEVANCES ({complaints.length})</span>
-          <span className="text-cyan-400">Live Map Sync</span>
+      {/* 5. Light Grievance Cards Feed (Matching Screenshot Cards) */}
+      <div className="flex-1 overflow-y-auto p-3 space-y-2.5">
+        <div className="flex items-center justify-between text-[11px] font-bold text-slate-500 px-1 pt-1">
+          <span>RECENT REPORTS ({complaints.length})</span>
+          <span className="text-emerald-600 font-semibold">Live Feed</span>
         </div>
 
         {complaints.length > 0 ? (
@@ -300,50 +296,50 @@ export default function AppleMapsLeftPanel({
             <div
               key={item.id}
               onClick={() => onSelectComplaint(item)}
-              className="pt-2.5 group cursor-pointer"
+              className="group cursor-pointer"
             >
-              <div className="p-3.5 rounded-2xl bg-slate-900/60 hover:bg-slate-800/80 border border-slate-800/80 hover:border-cyan-500/40 transition-all shadow-md">
+              <div className="p-3.5 rounded-2xl bg-white hover:bg-slate-50/90 border border-slate-200/90 transition-all shadow-sm hover:shadow-md">
                 <div className="flex items-center justify-between gap-2 mb-2">
-                  <span className="text-[11px] font-semibold text-slate-400 flex items-center gap-1.5">
+                  <span className="text-[11px] font-bold text-slate-500 flex items-center gap-1.5">
                     {CATEGORY_ICONS[item.category?.slug || 'roads-traffic']}
                     <span>{item.category?.name || 'Civic Issue'}</span>
                   </span>
                   {getSeverityBadge(item)}
                 </div>
 
-                <h3 className="text-xs font-bold text-white mb-1.5 group-hover:text-cyan-300 transition-colors line-clamp-2">
+                <h3 className="text-xs font-bold text-slate-900 mb-1.5 group-hover:text-emerald-600 transition-colors line-clamp-2">
                   {item.title}
                 </h3>
 
-                <p className="text-[11px] text-slate-400 flex items-center gap-1 mb-3">
-                  <MapPin className="w-3 h-3 text-cyan-400 shrink-0" />
+                <p className="text-[11px] text-slate-500 flex items-center gap-1 mb-3">
+                  <MapPin className="w-3 h-3 text-slate-400 shrink-0" />
                   <span className="truncate">{item.location_name}</span>
                 </p>
 
-                <div className="flex items-center justify-between border-t border-slate-800/60 pt-2 text-[11px]">
-                  <div className="flex items-center gap-1 text-cyan-300 font-medium">
-                    <Users className="w-3 h-3" />
+                <div className="flex items-center justify-between border-t border-slate-100 pt-2 text-[11px]">
+                  <div className="flex items-center gap-1 text-slate-600 font-semibold">
+                    <Users className="w-3 h-3 text-emerald-600" />
                     <span>{item.supporters_count} affected</span>
                   </div>
-                  <span className="text-slate-400 font-semibold flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
-                    <span>Preview</span>
-                    <ArrowRight className="w-3 h-3 text-cyan-400" />
+                  <span className="text-emerald-700 font-bold flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
+                    <span>View</span>
+                    <ArrowRight className="w-3 h-3 text-emerald-600" />
                   </span>
                 </div>
               </div>
             </div>
           ))
         ) : (
-          <div className="p-6 text-center text-slate-500 text-xs">
-            No complaints match the selected filter criteria.
+          <div className="p-6 text-center text-slate-400 text-xs font-medium">
+            No complaints match the selected criteria.
           </div>
         )}
       </div>
 
       {/* 6. Footer Telemetry */}
-      <div className="p-3 border-t border-slate-800/80 bg-slate-950/60 flex items-center justify-between text-[10px] text-slate-400">
+      <div className="p-3 border-t border-slate-100 bg-slate-50/80 flex items-center justify-between text-[10px] text-slate-500 font-medium">
         <span>{complaints.length} issues in active view</span>
-        <span className="text-cyan-400 font-semibold">{hotspots.length} Hotspots Identified</span>
+        <span className="text-emerald-700 font-bold">{hotspots.length} Hotspots Identified</span>
       </div>
     </aside>
   );

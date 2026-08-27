@@ -56,18 +56,18 @@ export default function MockGovernmentActionBar({
   };
 
   return (
-    <div className="w-full glass-panel border-t border-amber-500/40 bg-amber-950/30 p-4 z-30 shadow-2xl">
+    <div className="w-full bg-white/95 backdrop-blur-2xl border border-amber-300 rounded-3xl p-4 z-30 shadow-2xl text-slate-900 font-sans">
       <div className="max-w-7xl mx-auto space-y-3">
         {/* Banner Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Shield className="w-4 h-4 text-amber-400 animate-pulse" />
-            <span className="text-xs font-bold text-amber-300 uppercase tracking-wider">
+            <Shield className="w-4 h-4 text-amber-600 animate-pulse" />
+            <span className="text-xs font-bold text-amber-900 uppercase tracking-wider">
               Mock Municipal Government Action Bar (Official Simulation Tool)
             </span>
           </div>
           {successToast && (
-            <span className="text-xs font-bold text-emerald-300 bg-emerald-950/80 border border-emerald-500/40 px-3 py-1 rounded-xl animate-in fade-in">
+            <span className="text-xs font-bold text-emerald-800 bg-emerald-100 border border-emerald-300 px-3 py-1 rounded-xl animate-in fade-in">
               ✓ Municipal Status Updated! Tagged source: GOVERNMENT
             </span>
           )}
@@ -77,13 +77,13 @@ export default function MockGovernmentActionBar({
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs">
           {/* Target Complaint Dropdown */}
           <div className="sm:col-span-1">
-            <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Target Complaint</label>
+            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Target Complaint</label>
             <select
               value={complaintId}
-              onChange={e => setComplaintId(e.target.value)}
-              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-2.5 py-1.5 text-xs text-white focus:border-amber-500"
+              onChange={(e) => setComplaintId(e.target.value)}
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs text-slate-900 font-medium focus:border-amber-500"
             >
-              {complaints.map(c => (
+              {complaints.map((c) => (
                 <option key={c.id} value={c.id}>
                   [{c.status}] {c.title.substring(0, 30)}...
                 </option>
@@ -93,11 +93,11 @@ export default function MockGovernmentActionBar({
 
           {/* New Status Select */}
           <div>
-            <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Update Status</label>
+            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Update Status</label>
             <select
               value={status}
-              onChange={e => setStatus(e.target.value as ComplaintStatus)}
-              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-2.5 py-1.5 text-xs text-white focus:border-amber-500"
+              onChange={(e) => setStatus(e.target.value as ComplaintStatus)}
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs text-slate-900 font-medium focus:border-amber-500"
             >
               <option value="UNDER_REVIEW">UNDER REVIEW</option>
               <option value="IN_PROGRESS">IN PROGRESS</option>
@@ -108,25 +108,25 @@ export default function MockGovernmentActionBar({
 
           {/* Official Response Note */}
           <div>
-            <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Official Response Note</label>
+            <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Official Response Note</label>
             <input
               type="text"
               value={message}
-              onChange={e => setMessage(e.target.value)}
+              onChange={(e) => setMessage(e.target.value)}
               placeholder="e.g., Crew assigned for asphalt patching..."
-              className="w-full bg-slate-900 border border-slate-700 rounded-xl px-2.5 py-1.5 text-xs text-white focus:border-amber-500"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs text-slate-900 font-medium focus:border-amber-500"
             />
           </div>
 
           {/* Resolution Proof Upload & Action CTA */}
           <div className="flex items-end gap-2">
-            <label className="flex-1 px-3 py-1.5 rounded-xl border border-slate-700 bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer truncate">
+            <label className="flex-1 px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer truncate">
               {isUploading ? (
-                <Loader2 className="w-3.5 h-3.5 text-amber-400 animate-spin" />
+                <Loader2 className="w-3.5 h-3.5 text-amber-600 animate-spin" />
               ) : resolutionImg ? (
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
               ) : (
-                <Upload className="w-3.5 h-3.5 text-amber-400" />
+                <Upload className="w-3.5 h-3.5 text-amber-600" />
               )}
               <span className="truncate">{resolutionImg ? 'Proof Attached' : 'Attach Proof'}</span>
               <input type="file" accept="image/*" onChange={handleUploadResolutionPhoto} className="hidden" />
@@ -135,7 +135,7 @@ export default function MockGovernmentActionBar({
             <button
               onClick={handleSimulateUpdate}
               disabled={isSimulating || !complaintId}
-              className="px-4 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 font-bold text-slate-950 shadow-lg shadow-amber-500/20 shrink-0 transition-all"
+              className="px-4 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 font-bold text-white shadow-md shadow-amber-500/20 shrink-0 transition-all"
             >
               Simulate Action
             </button>

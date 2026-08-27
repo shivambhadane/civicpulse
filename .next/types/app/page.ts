@@ -1,4 +1,4 @@
-// File: /Users/jaybidkkar/Documents/Projects/civicpulse/civicpulse/src/app/page.tsx
+// File: /home/shivam/Desktop/Projects/civicpulse/src/app/page.tsx
 import * as entry from '../../../src/app/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
