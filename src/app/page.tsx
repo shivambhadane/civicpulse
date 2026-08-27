@@ -172,72 +172,90 @@ export default function HomePage() {
   };
 
   return (
-    <main className="min-h-screen flex flex-col bg-slate-950 text-slate-100 selection:bg-cyan-500 selection:text-slate-950">
-      {/* Top Hackathon Synthetic Disclosure Banner */}
-      <DisclosureBanner />
-
-      {/* Primary Navigation Header */}
-      <HeaderNav
-        onOpenReportWizard={() => setIsReportWizardOpen(true)}
-        onOpenActivityDrawer={() => setIsActivityDrawerOpen(true)}
-        isOfficialMode={isOfficialMode}
-        onToggleOfficialMode={() => setIsOfficialMode(!isOfficialMode)}
-        onSelectLocation={(lat, lng) => setCenterCoordinate({ lat, lng })}
-        supportedCount={supportedIds.length}
-      />
-
-      {/* Category & Status Filter Bar */}
-      <FilterBar
-        categories={categories}
-        selectedCategory={selectedCategory}
-        onSelectCategory={setSelectedCategory}
-        selectedStatus={selectedStatus}
-        onSelectStatus={setSelectedStatus}
-        showHotspots={showHotspots}
-        onToggleHotspots={() => setShowHotspots(!showHotspots)}
-        viewMode={viewMode}
-        onToggleViewMode={setViewMode}
-        totalComplaints={filteredComplaints.length}
-      />
-
-      {/* Main Content Area: Map View vs List View */}
-      <div className="flex-1 relative">
-        {viewMode === 'map' ? (
-          <GoogleMapView
-            complaints={filteredComplaints}
-            hotspots={hotspots}
-            selectedCategory={selectedCategory}
-            selectedStatus={selectedStatus}
-            showHotspots={showHotspots}
-            onSelectComplaint={c => {
-              setSelectedComplaint(c);
-              setIsDetailModalOpen(true);
-            }}
-            onSelectHotspot={h => {
-              setSelectedHotspot(h);
-              setIsHotspotModalOpen(true);
-            }}
-            centerCoordinate={centerCoordinate}
-          />
-        ) : (
-          <ListView
-            complaints={filteredComplaints}
-            onSelectComplaint={c => {
-              setSelectedComplaint(c);
-              setIsDetailModalOpen(true);
-            }}
-          />
-        )}
+    <main className="relative w-full h-screen overflow-hidden bg-slate-950 text-slate-100 selection:bg-cyan-500 selection:text-slate-950">
+      {/* 1. Full-Screen Dynamic Background Map Engine */}
+      <div className="absolute inset-0 w-full h-full z-0">
+        <GoogleMapView
+          complaints={filteredComplaints}
+          hotspots={hotspots}
+          selectedCategory={selectedCategory}
+          selectedStatus={selectedStatus}
+          showHotspots={showHotspots}
+          onSelectComplaint={(c) => {
+            setSelectedComplaint(c);
+            setIsDetailModalOpen(true);
+          }}
+          onSelectHotspot={(h) => {
+            setSelectedHotspot(h);
+            setIsHotspotModalOpen(true);
+          }}
+          centerCoordinate={centerCoordinate}
+        />
       </div>
 
-      {/* Mock Government Official Action Bar (Visible when Official Mode toggled) */}
-      {isOfficialMode && (
-        <MockGovernmentActionBar
-          complaints={complaints}
-          selectedComplaintId={selectedComplaint?.id}
-          onUpdateStatus={handleOfficialUpdateStatus}
-        />
-      )}
+      {/* 2. Floating UI Controls Container (Glassmorphism Stack) */}
+      <div className="relative z-10 h-full flex flex-col justify-between pointer-events-none">
+        <div>
+          {/* Top Hackathon Synthetic Disclosure Banner */}
+          <div className="pointer-events-auto">
+            <DisclosureBanner />
+          </div>
+
+          {/* Primary Navigation Header */}
+          <div className="pointer-events-auto">
+            <HeaderNav
+              onOpenReportWizard={() => setIsReportWizardOpen(true)}
+              onOpenActivityDrawer={() => setIsActivityDrawerOpen(true)}
+              isOfficialMode={isOfficialMode}
+              onToggleOfficialMode={() => setIsOfficialMode(!isOfficialMode)}
+              onSelectLocation={(lat, lng) => setCenterCoordinate({ lat, lng })}
+              supportedCount={supportedIds.length}
+            />
+          </div>
+
+          {/* Category & Status Filter Bar */}
+          <div className="pointer-events-auto">
+            <FilterBar
+              categories={categories}
+              selectedCategory={selectedCategory}
+              onSelectCategory={setSelectedCategory}
+              selectedStatus={selectedStatus}
+              onSelectStatus={setSelectedStatus}
+              showHotspots={showHotspots}
+              onToggleHotspots={() => setShowHotspots(!showHotspots)}
+              viewMode={viewMode}
+              onToggleViewMode={setViewMode}
+              totalComplaints={filteredComplaints.length}
+            />
+          </div>
+        </div>
+
+        {/* List View Glassmorphism Overlay (When View Mode is toggled to List) */}
+        {viewMode === 'list' && (
+          <div className="flex-1 max-w-4xl w-full mx-auto p-4 overflow-hidden pointer-events-auto animate-in fade-in slide-in-from-bottom-6 duration-200">
+            <div className="h-full glass-panel rounded-3xl border border-slate-700/80 shadow-2xl overflow-y-auto p-4">
+              <ListView
+                complaints={filteredComplaints}
+                onSelectComplaint={(c) => {
+                  setSelectedComplaint(c);
+                  setIsDetailModalOpen(true);
+                }}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Mock Government Official Action Bar (Visible when Official Mode toggled) */}
+        {isOfficialMode && (
+          <div className="pointer-events-auto">
+            <MockGovernmentActionBar
+              complaints={complaints}
+              selectedComplaintId={selectedComplaint?.id}
+              onUpdateStatus={handleOfficialUpdateStatus}
+            />
+          </div>
+        )}
+      </div>
 
       {/* MODAL 1: Report Issue Wizard (Screen 02, 03, 04) */}
       <ReportWizardModal
