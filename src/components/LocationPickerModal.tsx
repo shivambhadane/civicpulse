@@ -202,7 +202,19 @@ export default function LocationPickerModal({
   useEffect(() => {
     setCurrentLat(initialLat);
     setCurrentLng(initialLng);
-  }, [initialLat, initialLng]);
+
+    if (isOpen && mapRef.current) {
+      const timer = setTimeout(() => {
+        mapRef.current?.resize();
+        mapRef.current?.flyTo({
+          center: [initialLng, initialLat],
+          zoom: 16,
+          duration: 0,
+        });
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen, initialLat, initialLng]);
 
   const isValidMapboxToken = (token?: string) => {
     if (!token || token.trim() === '') return false;
@@ -274,7 +286,7 @@ export default function LocationPickerModal({
         </div>
 
         {/* Map Viewport Area */}
-        <div className="relative flex-1 min-h-[380px] bg-slate-950">
+        <div className="relative flex-1 min-h-[380px] h-[380px] w-full bg-slate-950">
           {isValidMapboxToken(mapboxToken) ? (
             /* ENGINE 1: Mapbox GL JS Vector Engine */
             <>
@@ -288,6 +300,9 @@ export default function LocationPickerModal({
                 }}
                 style={{ width: '100%', height: '100%' }}
                 mapStyle="mapbox://styles/mapbox/dark-v11"
+                onLoad={(evt) => {
+                  evt.target.resize();
+                }}
                 onMoveEnd={async (evt) => {
                   const lat = evt.viewState.latitude;
                   const lng = evt.viewState.longitude;
