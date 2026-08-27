@@ -23,6 +23,7 @@ import {
   findNearbyComplaintsFromStore,
 } from '@/lib/dataStore';
 import { INITIAL_CATEGORIES, INITIAL_DEPARTMENTS } from '@/lib/mockData';
+import { Bell } from 'lucide-react';
 
 export default function HomePage() {
   const [complaints, setComplaints] = useState<Complaint[]>([]);
@@ -30,11 +31,12 @@ export default function HomePage() {
   const [categories] = useState<Category[]>(INITIAL_CATEGORIES);
   const [departments] = useState<Department[]>(INITIAL_DEPARTMENTS);
 
-  // Filters & Views
+  // Nav & Filter State
+  const [activeNavTab, setActiveNavTab] = useState<'overview' | 'my-reports' | 'map' | 'analytics'>('overview');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
   const [showHotspots, setShowHotspots] = useState<boolean>(true);
-  const [viewMode, setViewMode] = useState<'map' | 'list'>('map');
+  const [viewMode, setViewMode] = useState<'map' | 'list'>('list');
   const [isOfficialMode, setIsOfficialMode] = useState<boolean>(false);
   const [centerCoordinate, setCenterCoordinate] = useState<{ lat: number; lng: number } | undefined>(undefined);
 
@@ -91,6 +93,18 @@ export default function HomePage() {
     }
     return true;
   });
+
+  // Handle Nav Tab Selection
+  const handleNavTabSelect = (tab: 'overview' | 'my-reports' | 'map' | 'analytics') => {
+    setActiveNavTab(tab);
+    if (tab === 'overview') {
+      setViewMode('list');
+    } else if (tab === 'map') {
+      setViewMode('map');
+    } else if (tab === 'my-reports') {
+      setIsActivityDrawerOpen(true);
+    }
+  };
 
   // Handle Nearby Check Trigger from Wizard
   const handleTriggerNearbyCheck = async (
@@ -168,9 +182,43 @@ export default function HomePage() {
   };
 
   return (
-    <main className="relative w-full h-screen overflow-hidden bg-slate-950 text-slate-100 selection:bg-cyan-500 selection:text-slate-950 font-sans">
-      {/* 1. Full-Screen Dynamic Background Map Layer (Z-0) */}
-      <div className="absolute inset-0 w-full h-full z-0">
+    <div className="relative min-h-screen bg-slate-100 text-slate-900 font-sans flex flex-col md:flex-row overflow-x-hidden">
+      {/* Top Mobile Header (Mobile Only) */}
+      <header className="fixed top-0 w-full z-50 flex justify-between items-center px-4 h-16 bg-white border-b border-slate-200 shadow-sm md:hidden">
+        <div className="text-base font-extrabold text-emerald-800 font-display">Civic Pulse</div>
+        <div className="flex items-center gap-3">
+          <button className="p-2 rounded-full hover:bg-slate-100 text-slate-600 transition-colors">
+            <Bell className="w-5 h-5" />
+          </button>
+          <div className="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-xs">
+            CP
+          </div>
+        </div>
+      </header>
+
+      {/* 1. Side Navigation Bar (Desktop & Collapsible) */}
+      <AppleMapsLeftPanel
+        complaints={filteredComplaints}
+        hotspots={hotspots}
+        categories={categories}
+        selectedCategory={selectedCategory}
+        onSelectCategory={setSelectedCategory}
+        selectedStatus={selectedStatus}
+        onSelectStatus={setSelectedStatus}
+        showHotspots={showHotspots}
+        onToggleHotspots={() => setShowHotspots(!showHotspots)}
+        onSelectComplaint={(c) => {
+          setSelectedComplaint(c);
+          setIsDetailModalOpen(true);
+        }}
+        onOpenReportWizard={() => setIsReportWizardOpen(true)}
+        onSelectLocation={(lat, lng) => setCenterCoordinate({ lat, lng })}
+        activeNavTab={activeNavTab}
+        onSelectNavTab={handleNavTabSelect}
+      />
+
+      {/* 2. Full-Screen Mapbox Background Layer */}
+      <div className="fixed inset-0 md:ml-[360px] z-0 overflow-hidden">
         <GoogleMapView
           complaints={filteredComplaints}
           hotspots={hotspots}
@@ -189,49 +237,35 @@ export default function HomePage() {
         />
       </div>
 
-      {/* 2. Floating Left Navigation Panel (Apple Maps Style) */}
-      <AppleMapsLeftPanel
-        complaints={filteredComplaints}
-        hotspots={hotspots}
-        categories={categories}
-        selectedCategory={selectedCategory}
-        onSelectCategory={setSelectedCategory}
-        selectedStatus={selectedStatus}
-        onSelectStatus={setSelectedStatus}
-        showHotspots={showHotspots}
-        onToggleHotspots={() => setShowHotspots(!showHotspots)}
-        onSelectComplaint={(c) => {
-          setSelectedComplaint(c);
-          setIsDetailModalOpen(true);
-        }}
-        onOpenReportWizard={() => setIsReportWizardOpen(true)}
-        onSelectLocation={(lat, lng) => setCenterCoordinate({ lat, lng })}
-      />
-
-      {/* 3. Floating Right Dock Controls (Apple Maps Right Stack) */}
+      {/* 3. Right Floating Dock Controls */}
       <AppleMapsRightControls
         isOfficialMode={isOfficialMode}
         onToggleOfficialMode={() => setIsOfficialMode(!isOfficialMode)}
         onOpenActivityDrawer={() => setIsActivityDrawerOpen(true)}
         supportedCount={supportedIds.length}
         viewMode={viewMode}
-        onToggleViewMode={setViewMode}
+        onToggleViewMode={(mode) => {
+          setViewMode(mode);
+          if (mode === 'list') setActiveNavTab('overview');
+          else if (mode === 'map') setActiveNavTab('map');
+        }}
       />
 
-      {/* 4. List View Overlay Panel (When View Mode is List) */}
-      {viewMode === 'list' && (
-        <div className="fixed inset-y-4 right-4 left-4 sm:left-[420px] z-20 overflow-hidden pointer-events-auto animate-in fade-in zoom-in-95 duration-200">
-          <div className="h-full bg-white/95 backdrop-blur-2xl border border-slate-200/90 rounded-[30px] shadow-2xl overflow-y-auto p-5">
+      {/* 4. Main Glassmorphism Dashboard Area */}
+      <main className="flex-1 w-full md:ml-[360px] pt-20 md:pt-6 px-4 md:px-8 pb-8 z-10 pointer-events-none">
+        {viewMode === 'list' && (
+          <div className="relative pointer-events-auto max-w-6xl mx-auto">
             <ListView
               complaints={filteredComplaints}
               onSelectComplaint={(c) => {
                 setSelectedComplaint(c);
                 setIsDetailModalOpen(true);
               }}
+              onOpenReportWizard={() => setIsReportWizardOpen(true)}
             />
           </div>
-        </div>
-      )}
+        )}
+      </main>
 
       {/* 5. Mock Government Official Floating Action Bar */}
       {isOfficialMode && (
@@ -307,6 +341,6 @@ export default function HomePage() {
           setIsDetailModalOpen(true);
         }}
       />
-    </main>
+    </div>
   );
 }

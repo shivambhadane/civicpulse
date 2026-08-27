@@ -11,15 +11,17 @@ import {
   ThumbsUp,
   MapPin,
   TrendingUp,
+  Megaphone,
 } from 'lucide-react';
 import Image from 'next/image';
 
 interface ListViewProps {
   complaints: Complaint[];
   onSelectComplaint: (complaint: Complaint) => void;
+  onOpenReportWizard?: () => void;
 }
 
-export default function ListView({ complaints, onSelectComplaint }: ListViewProps) {
+export default function ListView({ complaints, onSelectComplaint, onOpenReportWizard }: ListViewProps) {
   const totalReports = complaints.length;
   const resolvedCount = complaints.filter((c) => c.status === 'RESOLVED').length;
   const pendingCount = complaints.filter((c) => c.status !== 'RESOLVED').length;
@@ -28,73 +30,76 @@ export default function ListView({ complaints, onSelectComplaint }: ListViewProp
   const topHotspot = complaints.find((c) => c.supporters_count >= 5) || complaints[0];
 
   return (
-    <div className="max-w-6xl mx-auto p-4 space-y-6 text-slate-900 font-sans">
-      {/* 1. Citizen Dashboard Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200/80 pb-4">
+    <div className="max-w-6xl mx-auto space-y-6 text-slate-900 font-sans">
+      {/* 1. Page Header (Matching HTML layout) */}
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold font-display text-slate-900 tracking-tight">Citizen Dashboard</h1>
-          <p className="text-sm text-slate-500 font-medium">Your civic engagement summary and local insights.</p>
+          <h2 className="text-2xl sm:text-3xl font-extrabold font-display text-slate-900 tracking-tight">
+            Citizen Dashboard
+          </h2>
+          <p className="text-sm text-slate-600 font-medium mt-1">Your civic engagement summary and local insights.</p>
         </div>
+        {onOpenReportWizard && (
+          <button
+            onClick={onOpenReportWizard}
+            className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-5 py-3 rounded-xl shadow-md shadow-emerald-600/20 flex items-center justify-center gap-2 shrink-0 transition-all hover:scale-105"
+          >
+            <Megaphone className="w-4 h-4" />
+            <span>New Report</span>
+          </button>
+        )}
       </div>
 
-      {/* 2. Top Summary Stat Cards Grid (Matching User Screenshot) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* 2. Bento Grid Layout - Summary Stats */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {/* Card 1: Total Reports */}
-        <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-sm flex items-center justify-between">
-          <div>
-            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Reports</p>
-            <p className="text-3xl font-extrabold font-display text-slate-900 mt-1">{totalReports}</p>
+        <div className="bg-white/90 backdrop-blur-md border border-slate-200/80 rounded-2xl p-4 shadow-sm flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Reports</span>
+            <ListOrdered className="w-5 h-5 text-emerald-700" />
           </div>
-          <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center">
-            <ListOrdered className="w-5 h-5" />
-          </div>
+          <div className="mt-3 text-3xl font-black font-display text-slate-900">{totalReports}</div>
         </div>
 
         {/* Card 2: Resolved */}
-        <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-sm flex items-center justify-between">
-          <div>
-            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Resolved</p>
-            <p className="text-3xl font-extrabold font-display text-emerald-600 mt-1">{resolvedCount}</p>
+        <div className="bg-white/90 backdrop-blur-md border border-slate-200/80 rounded-2xl p-4 shadow-sm flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Resolved</span>
+            <CheckCircle2 className="w-5 h-5 text-emerald-600" />
           </div>
-          <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
-            <CheckCircle2 className="w-5 h-5" />
-          </div>
+          <div className="mt-3 text-3xl font-black font-display text-emerald-600">{resolvedCount}</div>
         </div>
 
         {/* Card 3: Pending */}
-        <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-sm flex items-center justify-between">
-          <div>
-            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Pending</p>
-            <p className="text-3xl font-extrabold font-display text-amber-600 mt-1">{pendingCount}</p>
+        <div className="bg-white/90 backdrop-blur-md border border-slate-200/80 rounded-2xl p-4 shadow-sm flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Pending</span>
+            <Clock className="w-5 h-5 text-amber-600" />
           </div>
-          <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
-            <Clock className="w-5 h-5" />
-          </div>
+          <div className="mt-3 text-3xl font-black font-display text-amber-600">{pendingCount}</div>
         </div>
 
-        {/* Card 4: Community Impact (Blue Highlight Card) */}
-        <div className="bg-gradient-to-tr from-blue-600 to-indigo-600 border border-blue-500 rounded-2xl p-4 shadow-md text-white flex items-center justify-between">
-          <div>
-            <p className="text-xs font-semibold text-blue-100 uppercase tracking-wider">Community Impact</p>
-            <p className="text-3xl font-extrabold font-display text-white mt-1">
-              {communityImpactPts} <span className="text-xs font-normal text-blue-200">pts</span>
-            </p>
+        {/* Card 4: Community Impact (Green/Blue Highlight Card) */}
+        <div className="bg-gradient-to-tr from-emerald-700 to-teal-700 border border-emerald-600 rounded-2xl p-4 shadow-md text-white flex flex-col justify-between relative overflow-hidden">
+          <div className="flex items-center justify-between relative z-10">
+            <span className="text-xs font-semibold text-emerald-100 uppercase tracking-wider">Community Impact</span>
+            <TrendingUp className="w-5 h-5 text-white" />
           </div>
-          <div className="w-10 h-10 rounded-xl bg-white/20 text-white flex items-center justify-center">
-            <TrendingUp className="w-5 h-5" />
+          <div className="mt-3 text-3xl font-black font-display text-white relative z-10 flex items-baseline gap-1">
+            {communityImpactPts} <span className="text-xs font-normal text-emerald-200">pts</span>
           </div>
         </div>
       </div>
 
-      {/* 3. Main Content Split: My Recent Reports vs Nearby Hotspots */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Column (2/3): My Recent Reports */}
-        <div className="lg:col-span-2 bg-white border border-slate-200/80 rounded-3xl p-5 shadow-sm space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-            <h2 className="text-base font-bold font-display text-slate-900 flex items-center gap-2">
+      {/* 3. Main Content Bento Grid: My Recent Reports vs Nearby Hotspots */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Left Column (lg:col-span-8): My Recent Reports */}
+        <div className="lg:col-span-8 bg-white/90 backdrop-blur-md border border-slate-200/80 rounded-3xl shadow-sm flex flex-col overflow-hidden">
+          <div className="p-4 sm:p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+            <h3 className="text-base font-bold font-display text-slate-900 flex items-center gap-2">
               <Clock className="w-4 h-4 text-emerald-600" />
               <span>My Recent Reports</span>
-            </h2>
+            </h3>
             <span className="text-xs text-emerald-700 font-bold hover:underline cursor-pointer">
               View All ({complaints.length})
             </span>
@@ -105,10 +110,10 @@ export default function ListView({ complaints, onSelectComplaint }: ListViewProp
               <div
                 key={item.id}
                 onClick={() => onSelectComplaint(item)}
-                className="py-3.5 flex items-center gap-3.5 hover:bg-slate-50/80 p-2 rounded-2xl transition-colors cursor-pointer group"
+                className="p-4 sm:p-5 flex gap-4 hover:bg-slate-50/80 transition-colors group cursor-pointer"
               >
                 {/* Thumbnail */}
-                <div className="w-14 h-14 rounded-xl overflow-hidden bg-slate-100 border border-slate-200/80 shrink-0 relative">
+                <div className="w-16 h-16 rounded-2xl bg-slate-100 border border-slate-200/80 shrink-0 overflow-hidden relative">
                   {item.image_urls && item.image_urls.length > 0 ? (
                     <Image
                       src={item.image_urls[0]}
@@ -123,14 +128,13 @@ export default function ListView({ complaints, onSelectComplaint }: ListViewProp
                   )}
                 </div>
 
-                {/* Content */}
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between gap-2 mb-1">
-                    <h3 className="text-xs font-bold text-slate-900 truncate group-hover:text-emerald-700 transition-colors">
+                  <div className="flex justify-between items-start mb-1">
+                    <h4 className="text-xs sm:text-sm font-bold text-slate-900 truncate group-hover:text-emerald-700 transition-colors">
                       {item.title}
-                    </h3>
+                    </h4>
                     <span
-                      className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                      className={`text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shrink-0 ${
                         item.status === 'RESOLVED'
                           ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
                           : 'bg-amber-100 text-amber-800 border border-amber-200'
@@ -139,8 +143,8 @@ export default function ListView({ complaints, onSelectComplaint }: ListViewProp
                       ● {item.status === 'RESOLVED' ? 'Resolved' : 'Pending'}
                     </span>
                   </div>
-                  <p className="text-[11px] text-slate-500 truncate mb-1">{item.location_name}</p>
-                  <div className="flex items-center gap-3 text-[10px] text-slate-400">
+                  <p className="text-xs text-slate-500 truncate mb-1.5">{item.location_name}</p>
+                  <div className="flex items-center gap-3 text-[11px] text-slate-400 font-medium">
                     <span>Category: {item.category?.name || 'Civic Issue'}</span>
                     <span>•</span>
                     <span className="text-emerald-700 font-semibold">{item.supporters_count} Supporters</span>
@@ -151,61 +155,60 @@ export default function ListView({ complaints, onSelectComplaint }: ListViewProp
           </div>
         </div>
 
-        {/* Right Column (1/3): Nearby Hotspots Card (Matching Screenshot) */}
-        {topHotspot && (
-          <div className="bg-white border border-slate-200/80 rounded-3xl p-5 shadow-sm space-y-4 flex flex-col justify-between">
-            <div>
-              <div className="flex items-center justify-between border-b border-slate-100 pb-3 mb-3">
-                <h2 className="text-base font-bold font-display text-slate-900 flex items-center gap-2">
+        {/* Right Column (lg:col-span-4): Nearby Hotspots Card */}
+        <div className="lg:col-span-4 flex flex-col">
+          {topHotspot && (
+            <div className="bg-white/90 backdrop-blur-md border border-slate-200/80 rounded-3xl shadow-sm flex flex-col overflow-hidden h-full">
+              <div className="p-4 sm:p-5 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
+                <h3 className="text-base font-bold font-display text-slate-900 flex items-center gap-2">
                   <Flame className="w-4 h-4 text-rose-600 animate-pulse" />
                   <span>Nearby Hotspots</span>
-                </h2>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-100 text-rose-700 border border-rose-200">
+                </h3>
+                <span className="bg-rose-100 text-rose-700 px-2 py-0.5 rounded text-[10px] font-bold border border-rose-200">
                   High Priority
                 </span>
               </div>
 
-              <p className="text-xs text-slate-500 mb-3">Urgent issues requiring community support in your zone.</p>
-
-              {/* Map/Image Preview Box */}
-              <div className="w-full h-32 rounded-2xl bg-slate-900 relative overflow-hidden mb-3 border border-slate-200">
-                {topHotspot.image_urls && topHotspot.image_urls.length > 0 ? (
-                  <Image
-                    src={topHotspot.image_urls[0]}
-                    alt={topHotspot.title}
-                    fill
-                    className="object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-gradient-to-tr from-slate-900 to-slate-800 flex items-center justify-center text-rose-400 font-bold text-xs p-4 text-center">
-                    🔥 Hotspot Zone ({topHotspot.supporters_count} citizens affected)
+              <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between space-y-4">
+                <div>
+                  <div className="w-full h-32 rounded-2xl bg-slate-900 relative overflow-hidden border border-slate-200 mb-3">
+                    {topHotspot.image_urls && topHotspot.image_urls.length > 0 ? (
+                      <Image
+                        src={topHotspot.image_urls[0]}
+                        alt={topHotspot.title}
+                        fill
+                        className="object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-tr from-slate-900 to-slate-800 flex items-center justify-center text-rose-400 font-bold text-xs p-4 text-center">
+                        🔥 Hotspot Zone ({topHotspot.supporters_count} citizens affected)
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
 
-              <h3 className="text-sm font-bold text-slate-900 mb-1">{topHotspot.title}</h3>
-              <p className="text-xs text-slate-500 mb-3 flex items-center gap-1">
-                <MapPin className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                <span className="truncate">{topHotspot.location_name}</span>
-              </p>
+                  <h4 className="text-sm font-bold text-slate-900">{topHotspot.title}</h4>
+                  <p className="text-xs text-slate-500 mt-0.5 flex items-center gap-1">
+                    <MapPin className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    <span className="truncate">{topHotspot.location_name}</span>
+                  </p>
 
-              {/* AI Insight Pill */}
-              <div className="bg-slate-50 border border-slate-200 rounded-xl p-2 text-[11px] text-slate-700 flex items-center gap-2 mb-4 font-medium">
-                <Sparkles className="w-4 h-4 text-amber-500 shrink-0" />
-                <span>AI Insight: High civic traffic impact detected. Priority dispatch recommended.</span>
+                  <div className="bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-[11px] text-slate-700 flex items-center gap-2 mt-3 font-medium">
+                    <Sparkles className="w-4 h-4 text-amber-500 shrink-0" />
+                    <span>AI Insight: High civic traffic impact detected. Priority dispatch recommended.</span>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => onSelectComplaint(topHotspot)}
+                  className="w-full border-2 border-emerald-600 text-emerald-700 hover:bg-emerald-600 hover:text-white font-bold text-xs py-2.5 rounded-xl transition-colors flex justify-center items-center gap-2"
+                >
+                  <ThumbsUp className="w-4 h-4" />
+                  <span>Support Issue ({topHotspot.supporters_count})</span>
+                </button>
               </div>
             </div>
-
-            {/* Support CTA Button */}
-            <button
-              onClick={() => onSelectComplaint(topHotspot)}
-              className="w-full py-2.5 px-4 rounded-xl border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white font-bold text-xs flex items-center justify-center gap-2 transition-all"
-            >
-              <ThumbsUp className="w-4 h-4" />
-              <span>Support Issue ({topHotspot.supporters_count})</span>
-            </button>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );
