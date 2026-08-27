@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
+import AuthSlideOver from '@/components/AuthSlideOver';
 import {
   MapPin,
   ArrowRight,
@@ -19,6 +20,15 @@ export default function LandingPage() {
   const { user, logout } = useAuth();
   const [activeTab, setActiveTab] = useState<'map' | 'ai' | 'hotspots'>('map');
 
+  // Auth Slide-over Drawer State
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
+
+  const openAuth = (mode: 'login' | 'signup') => {
+    setAuthMode(mode);
+    setIsAuthOpen(true);
+  };
+
   return (
     <div className="min-h-screen bg-white text-slate-900 font-sans selection:bg-slate-900 selection:text-white relative overflow-hidden">
       {/* Background Subtle Grid & Radial Glow (Dub.co Aesthetic) */}
@@ -28,7 +38,7 @@ export default function LandingPage() {
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[400px] bg-gradient-to-b from-emerald-500/10 via-teal-500/5 to-transparent blur-3xl pointer-events-none" />
 
       {/* 1. Sleek Navbar (Dub.co Pixel-Perfect Match) */}
-      <header className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-slate-100 px-6 py-3.5 flex items-center justify-between">
+      <header className="fixed top-0 w-full z-40 bg-white/80 backdrop-blur-md border-b border-slate-100 px-6 py-3.5 flex items-center justify-between">
         {/* Left Logo */}
         <Link href="/" className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-lg bg-slate-900 text-white flex items-center justify-center font-bold">
@@ -71,18 +81,20 @@ export default function LandingPage() {
             </div>
           ) : (
             <div className="flex items-center gap-3">
-              <Link
-                href="/login"
+              <button
+                type="button"
+                onClick={() => openAuth('login')}
                 className="text-xs font-semibold text-slate-600 hover:text-slate-950 px-3 py-2 rounded-full hover:bg-slate-100 transition-colors"
               >
                 Log in
-              </Link>
-              <Link
-                href="/login"
+              </button>
+              <button
+                type="button"
+                onClick={() => openAuth('signup')}
                 className="bg-slate-950 hover:bg-slate-800 text-white font-bold text-xs px-4.5 py-2 rounded-full shadow-sm transition-all hover:scale-[1.02]"
               >
                 Start for free
-              </Link>
+              </button>
             </div>
           )}
         </div>
@@ -91,7 +103,10 @@ export default function LandingPage() {
       {/* 2. Hero Section (Dub.co Exact Layout & Pills) */}
       <section className="relative pt-36 pb-20 px-6 max-w-5xl mx-auto text-center space-y-7 z-10">
         {/* Dub Pill Announcement Badge */}
-        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-slate-100/90 border border-slate-200/90 text-xs font-semibold text-slate-700 shadow-sm hover:border-slate-300 transition-all cursor-pointer">
+        <div
+          onClick={() => openAuth('signup')}
+          className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-slate-100/90 border border-slate-200/90 text-xs font-semibold text-slate-700 shadow-sm hover:border-slate-300 transition-all cursor-pointer"
+        >
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
           <span>Introducing Civic Pulse v1.0</span>
           <span className="text-slate-400">|</span>
@@ -115,13 +130,24 @@ export default function LandingPage() {
 
         {/* Hero CTA Buttons */}
         <div className="flex flex-wrap items-center justify-center gap-3.5 pt-2">
-          <Link
-            href={user ? "/dashboard" : "/login"}
-            className="px-7 py-3.5 rounded-full bg-slate-950 hover:bg-slate-800 text-white font-bold text-xs shadow-xl transition-all hover:scale-105 flex items-center gap-2"
-          >
-            <span>Start reporting for free</span>
-            <ArrowRight className="w-4 h-4" />
-          </Link>
+          {user ? (
+            <Link
+              href="/dashboard"
+              className="px-7 py-3.5 rounded-full bg-slate-950 hover:bg-slate-800 text-white font-bold text-xs shadow-xl transition-all hover:scale-105 flex items-center gap-2"
+            >
+              <span>Open Citizen Dashboard</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          ) : (
+            <button
+              type="button"
+              onClick={() => openAuth('signup')}
+              className="px-7 py-3.5 rounded-full bg-slate-950 hover:bg-slate-800 text-white font-bold text-xs shadow-xl transition-all hover:scale-105 flex items-center gap-2"
+            >
+              <span>Start reporting for free</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          )}
 
           <Link
             href="/admin"
@@ -379,13 +405,24 @@ export default function LandingPage() {
           </h2>
 
           <div className="pt-2">
-            <Link
-              href={user ? "/dashboard" : "/login"}
-              className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs shadow-lg transition-all hover:scale-105"
-            >
-              <span>{user ? "Go to Citizen Dashboard" : "Start reporting for free"}</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
+            {user ? (
+              <Link
+                href="/dashboard"
+                className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs shadow-lg transition-all hover:scale-105"
+              >
+                <span>Go to Citizen Dashboard</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            ) : (
+              <button
+                type="button"
+                onClick={() => openAuth('signup')}
+                className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs shadow-lg transition-all hover:scale-105"
+              >
+                <span>Start reporting for free</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            )}
           </div>
         </div>
       </section>
@@ -399,11 +436,18 @@ export default function LandingPage() {
           </div>
           <div className="flex gap-6 text-slate-500 font-semibold">
             <Link href="/dashboard" className="hover:text-slate-950 transition-colors">Dashboard</Link>
-            <Link href="/login" className="hover:text-slate-950 transition-colors">Log in</Link>
-            <Link href="/login" className="hover:text-slate-950 transition-colors">Sign up</Link>
+            <button onClick={() => openAuth('login')} className="hover:text-slate-950 transition-colors">Log in</button>
+            <button onClick={() => openAuth('signup')} className="hover:text-slate-950 transition-colors">Sign up</button>
           </div>
         </div>
       </footer>
+
+      {/* 8. Slide-over Auth Drawer */}
+      <AuthSlideOver
+        isOpen={isAuthOpen}
+        onClose={() => setIsAuthOpen(false)}
+        initialMode={authMode}
+      />
     </div>
   );
 }
