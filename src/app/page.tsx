@@ -1,11 +1,10 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import DisclosureBanner from '@/components/DisclosureBanner';
-import HeaderNav from '@/components/HeaderNav';
-import FilterBar from '@/components/FilterBar';
 import GoogleMapView from '@/components/GoogleMapView';
 import ListView from '@/components/ListView';
+import AppleMapsLeftPanel from '@/components/AppleMapsLeftPanel';
+import AppleMapsRightControls from '@/components/AppleMapsRightControls';
 import ReportWizardModal from '@/components/ReportWizardModal';
 import NearbyDetectionModal from '@/components/NearbyDetectionModal';
 import ComplaintDetailModal from '@/components/ComplaintDetailModal';
@@ -77,7 +76,7 @@ export default function HomePage() {
   };
 
   // Filtered Complaints
-  const filteredComplaints = complaints.filter(item => {
+  const filteredComplaints = complaints.filter((item) => {
     if (selectedCategory !== 'all' && item.category?.slug !== selectedCategory && item.category_id !== selectedCategory) {
       return false;
     }
@@ -115,9 +114,8 @@ export default function HomePage() {
         const data = await res.json();
 
         if (data.success && data.data?.has_similar && data.data?.matches?.length > 0) {
-          // Found duplicate candidates! Present Screen 05 modal
           const matchIds = data.data.matches.map((m: { complaint_id: string }) => m.complaint_id);
-          const candidateDetails = nearby.filter(n => matchIds.includes(n.id));
+          const candidateDetails = nearby.filter((n) => matchIds.includes(n.id));
 
           setNearbyMatches(candidateDetails.length > 0 ? candidateDetails : nearby);
           setPendingWizardProceedCallback(() => callbackToProceed);
@@ -129,7 +127,6 @@ export default function HomePage() {
       }
     }
 
-    // No duplicate found, proceed directly to Step 3 AI review
     callbackToProceed();
   };
 
@@ -140,8 +137,7 @@ export default function HomePage() {
     setIsNearbyModalOpen(false);
     setIsReportWizardOpen(false);
 
-    // Open detail page for supported complaint
-    const updated = getStoredComplaints().find(c => c.id === complaintId);
+    const updated = getStoredComplaints().find((c) => c.id === complaintId);
     if (updated) {
       setSelectedComplaint(updated);
       setIsDetailModalOpen(true);
@@ -172,8 +168,8 @@ export default function HomePage() {
   };
 
   return (
-    <main className="relative w-full h-screen overflow-hidden bg-slate-950 text-slate-100 selection:bg-cyan-500 selection:text-slate-950">
-      {/* 1. Full-Screen Dynamic Background Map Engine */}
+    <main className="relative w-full h-screen overflow-hidden bg-slate-950 text-slate-100 selection:bg-cyan-500 selection:text-slate-950 font-sans">
+      {/* 1. Full-Screen Dynamic Background Map Layer (Z-0) */}
       <div className="absolute inset-0 w-full h-full z-0">
         <GoogleMapView
           complaints={filteredComplaints}
@@ -193,77 +189,68 @@ export default function HomePage() {
         />
       </div>
 
-      {/* 2. Floating UI Controls Container (Glassmorphism Stack) */}
-      <div className="relative z-10 h-full flex flex-col justify-between pointer-events-none">
-        <div>
-          {/* Top Hackathon Synthetic Disclosure Banner */}
-          <div className="pointer-events-auto">
-            <DisclosureBanner />
-          </div>
+      {/* 2. Floating Left Navigation Panel (Apple Maps Style) */}
+      <AppleMapsLeftPanel
+        complaints={filteredComplaints}
+        hotspots={hotspots}
+        categories={categories}
+        selectedCategory={selectedCategory}
+        onSelectCategory={setSelectedCategory}
+        selectedStatus={selectedStatus}
+        onSelectStatus={setSelectedStatus}
+        showHotspots={showHotspots}
+        onToggleHotspots={() => setShowHotspots(!showHotspots)}
+        onSelectComplaint={(c) => {
+          setSelectedComplaint(c);
+          setIsDetailModalOpen(true);
+        }}
+        onOpenReportWizard={() => setIsReportWizardOpen(true)}
+        onSelectLocation={(lat, lng) => setCenterCoordinate({ lat, lng })}
+      />
 
-          {/* Primary Navigation Header */}
-          <div className="pointer-events-auto">
-            <HeaderNav
-              onOpenReportWizard={() => setIsReportWizardOpen(true)}
-              onOpenActivityDrawer={() => setIsActivityDrawerOpen(true)}
-              isOfficialMode={isOfficialMode}
-              onToggleOfficialMode={() => setIsOfficialMode(!isOfficialMode)}
-              onSelectLocation={(lat, lng) => setCenterCoordinate({ lat, lng })}
-              supportedCount={supportedIds.length}
-            />
-          </div>
+      {/* 3. Floating Right Dock Controls (Apple Maps Right Stack) */}
+      <AppleMapsRightControls
+        isOfficialMode={isOfficialMode}
+        onToggleOfficialMode={() => setIsOfficialMode(!isOfficialMode)}
+        onOpenActivityDrawer={() => setIsActivityDrawerOpen(true)}
+        supportedCount={supportedIds.length}
+        viewMode={viewMode}
+        onToggleViewMode={setViewMode}
+      />
 
-          {/* Category & Status Filter Bar */}
-          <div className="pointer-events-auto">
-            <FilterBar
-              categories={categories}
-              selectedCategory={selectedCategory}
-              onSelectCategory={setSelectedCategory}
-              selectedStatus={selectedStatus}
-              onSelectStatus={setSelectedStatus}
-              showHotspots={showHotspots}
-              onToggleHotspots={() => setShowHotspots(!showHotspots)}
-              viewMode={viewMode}
-              onToggleViewMode={setViewMode}
-              totalComplaints={filteredComplaints.length}
+      {/* 4. List View Overlay Panel (When View Mode is List) */}
+      {viewMode === 'list' && (
+        <div className="fixed inset-y-4 right-4 left-4 sm:left-[420px] z-20 overflow-hidden pointer-events-auto animate-in fade-in zoom-in-95 duration-200">
+          <div className="h-full bg-[#12141d]/95 backdrop-blur-2xl border border-white/10 rounded-[30px] shadow-2xl overflow-y-auto p-5">
+            <ListView
+              complaints={filteredComplaints}
+              onSelectComplaint={(c) => {
+                setSelectedComplaint(c);
+                setIsDetailModalOpen(true);
+              }}
             />
           </div>
         </div>
+      )}
 
-        {/* List View Glassmorphism Overlay (When View Mode is toggled to List) */}
-        {viewMode === 'list' && (
-          <div className="flex-1 max-w-4xl w-full mx-auto p-4 overflow-hidden pointer-events-auto animate-in fade-in slide-in-from-bottom-6 duration-200">
-            <div className="h-full glass-panel rounded-3xl border border-slate-700/80 shadow-2xl overflow-y-auto p-4">
-              <ListView
-                complaints={filteredComplaints}
-                onSelectComplaint={(c) => {
-                  setSelectedComplaint(c);
-                  setIsDetailModalOpen(true);
-                }}
-              />
-            </div>
-          </div>
-        )}
+      {/* 5. Mock Government Official Floating Action Bar */}
+      {isOfficialMode && (
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 w-full max-w-2xl px-4 pointer-events-auto">
+          <MockGovernmentActionBar
+            complaints={complaints}
+            selectedComplaintId={selectedComplaint?.id}
+            onUpdateStatus={handleOfficialUpdateStatus}
+          />
+        </div>
+      )}
 
-        {/* Mock Government Official Action Bar (Visible when Official Mode toggled) */}
-        {isOfficialMode && (
-          <div className="pointer-events-auto">
-            <MockGovernmentActionBar
-              complaints={complaints}
-              selectedComplaintId={selectedComplaint?.id}
-              onUpdateStatus={handleOfficialUpdateStatus}
-            />
-          </div>
-        )}
-      </div>
-
-      {/* MODAL 1: Report Issue Wizard (Screen 02, 03, 04) */}
+      {/* MODAL 1: Report Issue Wizard */}
       <ReportWizardModal
         isOpen={isReportWizardOpen}
         onClose={() => setIsReportWizardOpen(false)}
         categories={categories}
         departments={departments}
-        onSubmitSuccess={newComp => {
+        onSubmitSuccess={(newComp) => {
           refreshData();
           setSelectedComplaint(newComp as Complaint);
           setIsDetailModalOpen(true);
@@ -271,7 +258,7 @@ export default function HomePage() {
         onTriggerNearbyCheck={handleTriggerNearbyCheck}
       />
 
-      {/* MODAL 2: Existing / Nearby Issue Detection (Screen 05) */}
+      {/* MODAL 2: Existing / Nearby Issue Detection */}
       <NearbyDetectionModal
         isOpen={isNearbyModalOpen}
         onClose={() => setIsNearbyModalOpen(false)}
@@ -285,7 +272,7 @@ export default function HomePage() {
         }}
       />
 
-      {/* MODAL 3: Complaint Detail & Timeline View (Screen 06) */}
+      {/* MODAL 3: Complaint Detail & Timeline View */}
       <ComplaintDetailModal
         complaint={selectedComplaint}
         isOpen={isDetailModalOpen}
@@ -294,28 +281,28 @@ export default function HomePage() {
         isSupportedByUser={selectedComplaint ? supportedIds.includes(selectedComplaint.id) : false}
       />
 
-      {/* MODAL 4: Hotspot Summary View (Screen 07) */}
+      {/* MODAL 4: Hotspot Summary View */}
       <HotspotDetailModal
         hotspot={selectedHotspot}
         isOpen={isHotspotModalOpen}
         onClose={() => setIsHotspotModalOpen(false)}
         constituentComplaints={complaints.filter(
-          c => selectedHotspot && Math.abs(c.latitude - selectedHotspot.center_latitude) < 0.005
+          (c) => selectedHotspot && Math.abs(c.latitude - selectedHotspot.center_latitude) < 0.005
         )}
-        onSelectComplaint={c => {
+        onSelectComplaint={(c) => {
           setSelectedComplaint(c);
           setIsDetailModalOpen(true);
         }}
       />
 
-      {/* DRAWER 5: My Activity Drawer (Screen 08) */}
+      {/* DRAWER 5: My Activity Drawer */}
       <MyActivityDrawer
         isOpen={isActivityDrawerOpen}
         onClose={() => setIsActivityDrawerOpen(false)}
         allComplaints={complaints}
         supportedIds={supportedIds}
         userId={userId}
-        onSelectComplaint={c => {
+        onSelectComplaint={(c) => {
           setSelectedComplaint(c);
           setIsDetailModalOpen(true);
         }}
