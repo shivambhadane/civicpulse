@@ -183,14 +183,14 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="relative min-h-screen bg-slate-100 text-slate-900 font-sans flex flex-col md:flex-row overflow-x-hidden">
-      {/* Top Bar for Navigating between Pages */}
-      <header className="fixed top-0 w-full z-50 flex justify-between items-center px-4 h-14 bg-white/90 backdrop-blur-md border-b border-slate-200/80 shadow-sm md:hidden">
+    <div className="relative min-h-screen bg-slate-50 text-slate-900 font-sans flex flex-col md:flex-row overflow-x-hidden">
+      {/* Mobile Header Bar */}
+      <header className="fixed top-0 w-full z-50 flex justify-between items-center px-4 h-14 bg-white border-b border-slate-200 shadow-sm md:hidden">
         <div className="flex items-center gap-2">
           <Link href="/" className="p-1.5 rounded-lg text-slate-600 hover:bg-slate-100">
             <Home className="w-4 h-4" />
           </Link>
-          <span className="text-sm font-extrabold text-emerald-800 font-display">Civic Pulse</span>
+          <span className="text-sm font-extrabold text-slate-950 font-display">Civic Pulse</span>
         </div>
         <div className="flex items-center gap-2">
           <Link href="/admin" className="text-xs font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-full flex items-center gap-1">
@@ -203,7 +203,7 @@ export default function DashboardPage() {
         </div>
       </header>
 
-      {/* 1. Side Navigation Bar (Desktop & Collapsible) */}
+      {/* 1. Side Navigation Bar */}
       <AppleMapsLeftPanel
         complaints={filteredComplaints}
         hotspots={hotspots}
@@ -224,27 +224,7 @@ export default function DashboardPage() {
         onSelectNavTab={handleNavTabSelect}
       />
 
-      {/* 2. Full-Screen Mapbox Background Layer */}
-      <div className="fixed inset-0 md:ml-[360px] z-0 overflow-hidden">
-        <GoogleMapView
-          complaints={filteredComplaints}
-          hotspots={hotspots}
-          selectedCategory={selectedCategory}
-          selectedStatus={selectedStatus}
-          showHotspots={showHotspots}
-          onSelectComplaint={(c) => {
-            setSelectedComplaint(c);
-            setIsDetailModalOpen(true);
-          }}
-          onSelectHotspot={(h) => {
-            setSelectedHotspot(h);
-            setIsHotspotModalOpen(true);
-          }}
-          centerCoordinate={centerCoordinate}
-        />
-      </div>
-
-      {/* 3. Right Floating Dock Controls */}
+      {/* 2. Right Floating Dock Controls */}
       <AppleMapsRightControls
         isOfficialMode={isOfficialMode}
         onToggleOfficialMode={() => setIsOfficialMode(!isOfficialMode)}
@@ -258,23 +238,46 @@ export default function DashboardPage() {
         }}
       />
 
-      {/* 4. Main Glassmorphism Dashboard Area */}
-      <main className="flex-1 w-full md:ml-[360px] pt-16 md:pt-6 px-4 md:px-8 pb-8 z-10 pointer-events-none">
-        {viewMode === 'list' && (
-          <div className="relative pointer-events-auto max-w-6xl mx-auto">
-            <ListView
+      {/* 3. Main Content Area */}
+      <div className="flex-1 md:ml-[360px] min-h-screen relative bg-slate-50">
+        {/* Full-Screen Map (Only active in 'map' view) */}
+        {viewMode === 'map' ? (
+          <div className="fixed inset-0 md:ml-[360px] z-0 overflow-hidden">
+            <GoogleMapView
               complaints={filteredComplaints}
+              hotspots={hotspots}
+              selectedCategory={selectedCategory}
+              selectedStatus={selectedStatus}
+              showHotspots={showHotspots}
               onSelectComplaint={(c) => {
                 setSelectedComplaint(c);
                 setIsDetailModalOpen(true);
               }}
-              onOpenReportWizard={() => setIsReportWizardOpen(true)}
+              onSelectHotspot={(h) => {
+                setSelectedHotspot(h);
+                setIsHotspotModalOpen(true);
+              }}
+              centerCoordinate={centerCoordinate}
             />
           </div>
+        ) : (
+          /* Clean White Dashboard View (Overview Mode - No Map Overlap) */
+          <main className="w-full pt-20 md:pt-10 px-4 md:px-10 pb-12 z-10 bg-slate-50 min-h-screen">
+            <div className="max-w-6xl mx-auto">
+              <ListView
+                complaints={filteredComplaints}
+                onSelectComplaint={(c) => {
+                  setSelectedComplaint(c);
+                  setIsDetailModalOpen(true);
+                }}
+                onOpenReportWizard={() => setIsReportWizardOpen(true)}
+              />
+            </div>
+          </main>
         )}
-      </main>
+      </div>
 
-      {/* 5. Mock Government Official Floating Action Bar */}
+      {/* 4. Mock Government Official Floating Action Bar */}
       {isOfficialMode && (
         <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 w-full max-w-2xl px-4 pointer-events-auto">
           <MockGovernmentActionBar
