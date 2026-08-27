@@ -99,14 +99,15 @@ export function supportComplaintInStore(complaintId: string): Complaint | null {
   return complaints[index];
 }
 
-export function addComplaintToStore(newComplaint: Partial<Complaint>): Complaint {
+export function addComplaintToStore(newComplaint: Partial<Complaint> & { user_id?: string }): Complaint {
   const complaints = getStoredComplaints();
   const category = INITIAL_CATEGORIES.find(c => c.id === newComplaint.category_id || c.slug === newComplaint.ai_category) || INITIAL_CATEGORIES[0];
   const department = INITIAL_DEPARTMENTS.find(d => d.id === newComplaint.department_id) || INITIAL_DEPARTMENTS[0];
+  const activeUserId = newComplaint.user_id || getOrCreateUserId();
 
   const fullComplaint: Complaint = {
     id: `cmp-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
-    user_id: getOrCreateUserId(),
+    user_id: activeUserId,
     category_id: category.id,
     department_id: department.id,
     title: newComplaint.title || 'Civic Issue Report',
@@ -129,6 +130,7 @@ export function addComplaintToStore(newComplaint: Partial<Complaint>): Complaint
       {
         id: `upd-init-${Date.now()}`,
         complaint_id: `cmp-${Date.now()}`,
+        user_id: activeUserId,
         status: 'SUBMITTED',
         message: 'Complaint submitted by citizen.',
         source: 'CITIZEN',

@@ -15,6 +15,7 @@ import MockGovernmentActionBar from '@/components/MockGovernmentActionBar';
 import { Complaint, Hotspot, Category, Department, NearbyComplaintMatch, ComplaintStatus } from '@/types/database';
 import {
   getStoredComplaints,
+  saveComplaints,
   getStoredHotspots,
   getOrCreateUserId,
   getSupportedComplaintIds,
@@ -295,8 +296,13 @@ export default function DashboardPage() {
         categories={categories}
         departments={departments}
         onSubmitSuccess={(newComp) => {
-          refreshData();
-          setSelectedComplaint(newComp as Complaint);
+          const createdComp = newComp as Complaint;
+          const current = getStoredComplaints();
+          const updated = [createdComp, ...current.filter((c) => c.id !== createdComp.id)];
+          saveComplaints(updated);
+          setComplaints(updated);
+          setHotspots(getStoredHotspots());
+          setSelectedComplaint(createdComp);
           setIsDetailModalOpen(true);
         }}
         onTriggerNearbyCheck={handleTriggerNearbyCheck}

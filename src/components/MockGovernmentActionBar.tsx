@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { Complaint, ComplaintStatus } from '@/types/database';
-import { Shield, Upload, CheckCircle2, Loader2 } from 'lucide-react';
+import { Shield, CheckCircle2, Loader2, Image as ImageIcon } from 'lucide-react';
 
 interface MockGovernmentActionBarProps {
   complaints: Complaint[];
@@ -120,15 +120,15 @@ export default function MockGovernmentActionBar({
 
           {/* Resolution Proof Upload & Action CTA */}
           <div className="flex items-end gap-2">
-            <label className="flex-1 px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer truncate">
+            <label className="flex-1 px-3.5 py-2 rounded-xl border border-amber-300 bg-amber-50/80 hover:bg-amber-100/90 text-amber-950 text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer truncate shadow-sm transition-all">
               {isUploading ? (
-                <Loader2 className="w-3.5 h-3.5 text-amber-600 animate-spin" />
+                <Loader2 className="w-4 h-4 text-amber-600 animate-spin shrink-0" />
               ) : resolutionImg ? (
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
               ) : (
-                <Upload className="w-3.5 h-3.5 text-amber-600" />
+                <ImageIcon className="w-4 h-4 text-amber-600 shrink-0" />
               )}
-              <span className="truncate">{resolutionImg ? 'Proof Attached' : 'Attach Proof'}</span>
+              <span className="truncate">{resolutionImg ? 'Image Added' : 'Add Image'}</span>
               <input type="file" accept="image/*" onChange={handleUploadResolutionPhoto} className="hidden" />
             </label>
 

@@ -127,6 +127,50 @@ export default function ComplaintDetailModal({
             </div>
           )}
 
+          {/* Submitted Issue Map Location Preview */}
+          <div className="rounded-2xl overflow-hidden border border-slate-800 bg-slate-950 p-4 relative flex flex-col justify-between min-h-[170px] shadow-lg">
+            {/* Dynamic Vector Canvas Grid & Roads */}
+            <div className="absolute inset-0 opacity-45 pointer-events-none">
+              <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <pattern id="detailGridPattern" width="50" height="50" patternUnits="userSpaceOnUse">
+                    <path d="M 50 0 L 0 0 0 50" fill="none" stroke="rgba(56, 189, 248, 0.2)" strokeWidth="1" />
+                    <circle cx="0" cy="0" r="1.5" fill="rgba(56, 189, 248, 0.4)" />
+                  </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#detailGridPattern)" />
+                <path d="M -50 120 Q 180 30 400 200 T 800 100" fill="none" stroke="rgba(14, 165, 233, 0.35)" strokeWidth="20" strokeLinecap="round" />
+                <path d="M 180 -20 Q 300 200 150 500" fill="none" stroke="rgba(14, 165, 233, 0.25)" strokeWidth="14" strokeLinecap="round" />
+              </svg>
+            </div>
+
+            <div className="relative z-10 flex items-center justify-between">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-cyan-400 bg-slate-900/90 px-2.5 py-1 rounded-full border border-cyan-500/30 flex items-center gap-1">
+                <MapPin className="w-3 h-3 text-cyan-400" />
+                Submitted Report Location Map Preview
+              </span>
+              <span className="text-[10px] text-slate-400 font-mono bg-slate-900/80 px-2 py-0.5 rounded-full border border-slate-800">
+                {complaint.latitude.toFixed(5)}°N, {complaint.longitude.toFixed(5)}°E
+              </span>
+            </div>
+
+            <div className="relative z-10 my-3 flex justify-center">
+              <div className="flex flex-col items-center animate-bounce">
+                <div className="w-10 h-10 rounded-2xl bg-cyan-500 border-2 border-white text-slate-950 flex items-center justify-center shadow-2xl shadow-cyan-500/50">
+                  <MapPin className="w-6 h-6 fill-current text-slate-950" />
+                </div>
+                <div className="w-3 h-3 bg-cyan-400 rotate-45 -mt-1 shadow-md" />
+              </div>
+            </div>
+
+            <div className="relative z-10 bg-slate-900/90 px-3 py-2 rounded-xl border border-slate-800 flex items-center justify-between">
+              <span className="text-xs text-slate-200 font-bold truncate flex items-center gap-1.5">
+                <MapPin className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+                {complaint.location_name}
+              </span>
+            </div>
+          </div>
+
           {/* Description */}
           <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200">
             <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">Issue Description</h4>

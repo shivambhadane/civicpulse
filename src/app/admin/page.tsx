@@ -15,6 +15,8 @@ import {
   MapPin,
   Send,
   AlertTriangle,
+  Image as ImageIcon,
+  Loader2,
 } from 'lucide-react';
 import Image from 'next/image';
 
@@ -29,6 +31,7 @@ export default function AdminPage() {
   const [updateStatus, setUpdateStatus] = useState<ComplaintStatus>('IN_PROGRESS');
   const [updateNote, setUpdateNote] = useState<string>('');
   const [resolutionPhoto, setResolutionPhoto] = useState<string>('');
+  const [isUploadingPhoto, setIsUploadingPhoto] = useState<boolean>(false);
 
   useEffect(() => {
     setComplaints(getStoredComplaints());
@@ -36,6 +39,26 @@ export default function AdminPage() {
 
   const refreshData = () => {
     setComplaints(getStoredComplaints());
+  };
+
+  const handleUploadAdminPhoto = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploadingPhoto(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const res = await fetch('/api/upload', { method: 'POST', body: formData });
+      const data = await res.json();
+      if (data.success) {
+        setResolutionPhoto(data.data.url);
+      }
+    } catch (err) {
+      console.error('Photo upload error:', err);
+    } finally {
+      setIsUploadingPhoto(false);
+    }
   };
 
   const filtered = complaints.filter((c) => {
@@ -339,15 +362,19 @@ export default function AdminPage() {
 
               <div>
                 <label className="block text-xs font-bold text-slate-300 mb-1">
-                  Resolution Image URL (Optional proof)
+                  Resolution Proof Image
                 </label>
-                <input
-                  type="text"
-                  placeholder="https://images.unsplash.com/photo-..."
-                  value={resolutionPhoto}
-                  onChange={(e) => setResolutionPhoto(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500"
-                />
+                <label className="w-full px-4 py-2.5 rounded-xl border border-slate-800 bg-slate-950 hover:bg-slate-800 text-amber-400 text-xs font-bold flex items-center justify-center gap-2 cursor-pointer transition-all border-dashed">
+                  {isUploadingPhoto ? (
+                    <Loader2 className="w-4 h-4 text-amber-400 animate-spin shrink-0" />
+                  ) : resolutionPhoto ? (
+                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                  ) : (
+                    <ImageIcon className="w-4 h-4 text-amber-400 shrink-0" />
+                  )}
+                  <span>{resolutionPhoto ? 'Image Proof Attached' : 'Add Image'}</span>
+                  <input type="file" accept="image/*" onChange={handleUploadAdminPhoto} className="hidden" />
+                </label>
               </div>
 
               <div className="pt-2 flex justify-end gap-3">

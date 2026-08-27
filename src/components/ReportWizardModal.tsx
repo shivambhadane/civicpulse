@@ -1,11 +1,13 @@
 'use client';
 
 import React, { useState } from 'react';
-import { X, MapPin, Upload, Sparkles, AlertCircle, ChevronRight, ArrowLeft, Loader2, ShieldCheck } from 'lucide-react';
+import { X, MapPin, Upload, Sparkles, AlertCircle, ChevronRight, ArrowLeft, Loader2, ShieldCheck, Check } from 'lucide-react';
 import LocationPickerModal from './LocationPickerModal';
 import { Category, Department, SeverityLevel } from '@/types/database';
 import { AIClassificationResult, AIDepartmentRoutingResult } from '@/types/ai';
 import Image from 'next/image';
+
+import { getOrCreateUserId } from '@/lib/dataStore';
 
 interface ReportWizardModalProps {
   isOpen: boolean;
@@ -155,6 +157,7 @@ export default function ReportWizardModal({
         latitude: lat,
         longitude: lng,
         location_name: locationName,
+        user_id: getOrCreateUserId(),
         category_id: selectedCategoryId,
         department_id: selectedDepartmentId,
         severity: selectedSeverity,
@@ -231,24 +234,62 @@ export default function ReportWizardModal({
             {/* STEP 1: LOCATION SELECTION */}
             {step === 1 && (
               <div className="space-y-4">
-                <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-bold text-emerald-700 uppercase tracking-wider flex items-center gap-1.5">
-                      <MapPin className="w-4 h-4 text-emerald-600" />
-                      Selected Pin-Drop Coordinates
-                    </span>
-                    <button
-                      onClick={() => setIsLocationPickerOpen(true)}
-                      className="px-3 py-1.5 rounded-xl bg-emerald-100 hover:bg-emerald-200 text-emerald-800 text-xs font-bold transition-colors"
-                    >
-                      Change Pin on Map
-                    </button>
+                <div className="bg-slate-900 text-slate-100 rounded-3xl border border-slate-800 overflow-hidden shadow-xl relative group">
+                  {/* Visual Real Vector Map Canvas Preview Box */}
+                  <div
+                    onClick={() => setIsLocationPickerOpen(true)}
+                    className="relative w-full h-48 bg-slate-950 overflow-hidden cursor-pointer flex items-center justify-center border-b border-slate-800 select-none group-hover:opacity-95 transition-opacity"
+                  >
+                    {/* Dynamic Vector Canvas Grid & Roads */}
+                    <div className="absolute inset-0 opacity-45 pointer-events-none">
+                      <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                          <pattern id="miniGrid" width="50" height="50" patternUnits="userSpaceOnUse">
+                            <path d="M 50 0 L 0 0 0 50" fill="none" stroke="rgba(56, 189, 248, 0.2)" strokeWidth="1" />
+                            <circle cx="0" cy="0" r="1.5" fill="rgba(56, 189, 248, 0.4)" />
+                          </pattern>
+                        </defs>
+                        <rect width="100%" height="100%" fill="url(#miniGrid)" />
+                        <path d="M -50 120 Q 180 30 400 200 T 800 100" fill="none" stroke="rgba(14, 165, 233, 0.35)" strokeWidth="20" strokeLinecap="round" />
+                        <path d="M 180 -20 Q 300 200 150 500" fill="none" stroke="rgba(14, 165, 233, 0.25)" strokeWidth="14" strokeLinecap="round" />
+                      </svg>
+                    </div>
+
+                    {/* Centered Target Pin Marker */}
+                    <div className="relative z-10 flex flex-col items-center animate-bounce">
+                      <div className="w-10 h-10 rounded-2xl bg-cyan-500 border-2 border-white text-slate-950 flex items-center justify-center shadow-xl shadow-cyan-500/50">
+                        <MapPin className="w-6 h-6 fill-current text-slate-950" />
+                      </div>
+                      <div className="w-3 h-3 bg-cyan-400 rotate-45 -mt-1 shadow-md" />
+                    </div>
+
+                    {/* Overlay Action Badge */}
+                    <div className="absolute bottom-3 right-3 z-20 px-3 py-1.5 rounded-xl bg-slate-900/90 border border-cyan-500/40 text-cyan-300 text-xs font-bold shadow-lg flex items-center gap-1.5 backdrop-blur-md group-hover:scale-105 transition-transform">
+                      <MapPin className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>Change Pin on Map</span>
+                    </div>
                   </div>
 
-                  <p className="text-sm font-bold text-slate-900">{locationName}</p>
-                  <p className="text-xs text-slate-500 mt-1 font-mono">
-                    Lat: {lat.toFixed(5)}, Lng: {lng.toFixed(5)}
-                  </p>
+                  {/* Address & Coordinate Details */}
+                  <div className="p-4 bg-slate-900/90 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                    <div>
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-cyan-400 flex items-center gap-1">
+                        <MapPin className="w-3.5 h-3.5" />
+                        Selected Defect Location
+                      </span>
+                      <p className="text-sm font-bold text-white mt-0.5">{locationName}</p>
+                      <p className="text-[11px] text-slate-400 font-mono mt-0.5">
+                        {lat.toFixed(5)}°N, {lng.toFixed(5)}°E
+                      </p>
+                    </div>
+
+                    <button
+                      onClick={() => setIsLocationPickerOpen(true)}
+                      className="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold text-xs shadow-lg shadow-cyan-500/25 shrink-0 transition-all"
+                    >
+                      Open Full Map Picker
+                    </button>
+                  </div>
                 </div>
 
                 <div className="text-xs text-slate-600 bg-amber-50/80 p-3.5 rounded-xl border border-amber-200 flex items-start gap-2 font-medium">
@@ -436,18 +477,27 @@ export default function ReportWizardModal({
                 )}
               </button>
             ) : (
-              <button
-                onClick={handleSubmitFinal}
-                disabled={isSubmitting}
-                className="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-xs font-bold text-white shadow-lg shadow-emerald-600/20 flex items-center gap-1.5 transition-all"
-              >
-                {isSubmitting ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : (
-                  <ShieldCheck className="w-4 h-4" />
-                )}
-                <span>Publish Issue to Map</span>
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={onClose}
+                  type="button"
+                  className="px-4 py-2.5 rounded-xl border border-slate-200 hover:bg-slate-200 text-xs font-bold text-slate-700 transition-colors"
+                >
+                  Close
+                </button>
+                <button
+                  onClick={handleSubmitFinal}
+                  disabled={isSubmitting}
+                  className="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-xs font-bold text-white shadow-lg shadow-emerald-600/20 flex items-center gap-1.5 transition-all"
+                >
+                  {isSubmitting ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Check className="w-4 h-4" />
+                  )}
+                  <span>Done (Publish & Close)</span>
+                </button>
+              </div>
             )}
           </div>
         </div>

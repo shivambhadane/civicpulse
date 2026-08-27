@@ -8,6 +8,7 @@ const createComplaintSchema = z.object({
   latitude: z.number(),
   longitude: z.number(),
   location_name: z.string(),
+  user_id: z.string().optional(),
   category_id: z.string().optional(),
   department_id: z.string().optional(),
   severity: z.enum(['LOW', 'MEDIUM', 'HIGH', 'CRITICAL']).optional(),
