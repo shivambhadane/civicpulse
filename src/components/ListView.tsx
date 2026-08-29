@@ -19,9 +19,15 @@ interface ListViewProps {
   complaints: Complaint[];
   onSelectComplaint: (complaint: Complaint) => void;
   onOpenReportWizard?: () => void;
+  onSwitchToMapView?: () => void;
 }
 
-export default function ListView({ complaints, onSelectComplaint, onOpenReportWizard }: ListViewProps) {
+export default function ListView({
+  complaints,
+  onSelectComplaint,
+  onOpenReportWizard,
+  onSwitchToMapView,
+}: ListViewProps) {
   const totalReports = complaints.length;
   const resolvedCount = complaints.filter((c) => c.status === 'RESOLVED').length;
   const pendingCount = complaints.filter((c) => c.status !== 'RESOLVED').length;
@@ -31,29 +37,43 @@ export default function ListView({ complaints, onSelectComplaint, onOpenReportWi
 
   return (
     <div className="max-w-6xl mx-auto space-y-6 text-slate-900 font-sans">
-      {/* 1. Page Header (Matching HTML layout) */}
+      {/* 1. Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
-          <h2 className="text-2xl sm:text-3xl font-extrabold font-display text-slate-900 tracking-tight">
-            Citizen Dashboard
+          <p className="text-xs font-bold uppercase tracking-[0.16em] text-emerald-700">Pune · Civic workspace</p>
+          <h2 className="mt-1 text-2xl sm:text-3xl font-extrabold font-display text-slate-900 tracking-tight">
+            Your neighbourhood, at a glance
           </h2>
-          <p className="text-sm text-slate-600 font-medium mt-1">Your civic engagement summary and local insights.</p>
+          <p className="text-sm text-slate-600 font-medium mt-1">
+            Real-time civic engagement summary and live ward map.
+          </p>
         </div>
-        {onOpenReportWizard && (
-          <button
-            onClick={onOpenReportWizard}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-5 py-3 rounded-xl shadow-md shadow-emerald-600/20 flex items-center justify-center gap-2 shrink-0 transition-all hover:scale-105"
-          >
-            <Megaphone className="w-4 h-4" />
-            <span>New Report</span>
-          </button>
-        )}
+        <div className="flex items-center gap-3">
+          {onSwitchToMapView && (
+            <button
+              onClick={onSwitchToMapView}
+              className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-900 font-bold text-xs px-4 py-3 rounded-xl shadow-sm flex items-center justify-center gap-2 transition-all hover:scale-105"
+            >
+            <MapPin className="w-4 h-4 text-emerald-600" />
+              <span>Full Screen Map</span>
+            </button>
+          )}
+          {onOpenReportWizard && (
+            <button
+              onClick={onOpenReportWizard}
+              className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-5 py-3 rounded-xl shadow-md shadow-emerald-600/20 flex items-center justify-center gap-2 shrink-0 transition-all hover:scale-105"
+            >
+              <Megaphone className="w-4 h-4" />
+              <span>New Report</span>
+            </button>
+          )}
+        </div>
       </div>
 
       {/* 2. Bento Grid Layout - Summary Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {/* Card 1: Total Reports */}
-        <div className="bg-white/90 backdrop-blur-md border border-slate-200/80 rounded-2xl p-4 shadow-sm flex flex-col justify-between">
+        <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-sm flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Reports</span>
             <ListOrdered className="w-5 h-5 text-emerald-700" />
@@ -62,7 +82,7 @@ export default function ListView({ complaints, onSelectComplaint, onOpenReportWi
         </div>
 
         {/* Card 2: Resolved */}
-        <div className="bg-white/90 backdrop-blur-md border border-slate-200/80 rounded-2xl p-4 shadow-sm flex flex-col justify-between">
+        <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-sm flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Resolved</span>
             <CheckCircle2 className="w-5 h-5 text-emerald-600" />
@@ -71,7 +91,7 @@ export default function ListView({ complaints, onSelectComplaint, onOpenReportWi
         </div>
 
         {/* Card 3: Pending */}
-        <div className="bg-white/90 backdrop-blur-md border border-slate-200/80 rounded-2xl p-4 shadow-sm flex flex-col justify-between">
+        <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-sm flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Pending</span>
             <Clock className="w-5 h-5 text-amber-600" />
@@ -79,7 +99,7 @@ export default function ListView({ complaints, onSelectComplaint, onOpenReportWi
           <div className="mt-3 text-3xl font-black font-display text-amber-600">{pendingCount}</div>
         </div>
 
-        {/* Card 4: Community Impact (Green/Blue Highlight Card) */}
+        {/* Card 4: Community Impact */}
         <div className="bg-gradient-to-tr from-emerald-700 to-teal-700 border border-emerald-600 rounded-2xl p-4 shadow-md text-white flex flex-col justify-between relative overflow-hidden">
           <div className="flex items-center justify-between relative z-10">
             <span className="text-xs font-semibold text-emerald-100 uppercase tracking-wider">Community Impact</span>
@@ -91,10 +111,10 @@ export default function ListView({ complaints, onSelectComplaint, onOpenReportWi
         </div>
       </div>
 
-      {/* 3. Main Content Bento Grid: My Recent Reports vs Nearby Hotspots */}
+      {/* 3. Main content: reports and the highest-impact issue */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Column (lg:col-span-8): My Recent Reports */}
-        <div className="lg:col-span-8 bg-white/90 backdrop-blur-md border border-slate-200/80 rounded-3xl shadow-sm flex flex-col overflow-hidden">
+        <div className="lg:col-span-8 bg-white border border-slate-200/80 rounded-3xl shadow-sm flex flex-col overflow-hidden">
           <div className="p-4 sm:p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
             <h3 className="text-base font-bold font-display text-slate-900 flex items-center gap-2">
               <Clock className="w-4 h-4 text-emerald-600" />
@@ -158,7 +178,7 @@ export default function ListView({ complaints, onSelectComplaint, onOpenReportWi
         {/* Right Column (lg:col-span-4): Nearby Hotspots Card */}
         <div className="lg:col-span-4 flex flex-col">
           {topHotspot && (
-            <div className="bg-white/90 backdrop-blur-md border border-slate-200/80 rounded-3xl shadow-sm flex flex-col overflow-hidden h-full">
+            <div className="bg-white border border-slate-200/80 rounded-3xl shadow-sm flex flex-col overflow-hidden h-full">
               <div className="p-4 sm:p-5 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
                 <h3 className="text-base font-bold font-display text-slate-900 flex items-center gap-2">
                   <Flame className="w-4 h-4 text-rose-600 animate-pulse" />

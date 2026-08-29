@@ -19,7 +19,6 @@ import {
   LayoutDashboard,
   FileText,
   Map,
-  BarChart3,
   LogOut,
   User,
   LogIn,
@@ -41,8 +40,8 @@ interface AppleMapsLeftPanelProps {
   onSelectComplaint: (complaint: Complaint) => void;
   onOpenReportWizard: () => void;
   onSelectLocation: (lat: number, lng: number, name: string) => void;
-  activeNavTab: 'overview' | 'my-reports' | 'map' | 'analytics';
-  onSelectNavTab: (tab: 'overview' | 'my-reports' | 'map' | 'analytics') => void;
+  activeNavTab: 'overview' | 'my-reports' | 'map';
+  onSelectNavTab: (tab: 'overview' | 'my-reports' | 'map') => void;
 }
 
 const POPULAR_LOCALITIES = [
@@ -127,14 +126,14 @@ export default function AppleMapsLeftPanel({
 
   const handleLogout = async () => {
     await logout();
-    router.push('/login');
+    router.push('/?auth=login');
   };
 
   if (isCollapsed) {
     return (
       <button
         onClick={() => setIsCollapsed(false)}
-        className="fixed left-4 top-4 z-30 p-3 rounded-2xl bg-white/95 backdrop-blur-2xl border border-slate-200 text-slate-900 shadow-xl hover:bg-slate-50 transition-all pointer-events-auto flex items-center gap-2.5 font-medium text-xs"
+        className="fixed left-4 top-4 z-30 hidden md:flex p-3 rounded-2xl bg-white/95 backdrop-blur-2xl border border-slate-200 text-slate-900 shadow-xl hover:bg-slate-50 transition-all pointer-events-auto items-center gap-2.5 font-medium text-xs"
         title="Expand Side Navigation"
       >
         <div className="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-sm">
@@ -147,7 +146,7 @@ export default function AppleMapsLeftPanel({
   }
 
   return (
-    <aside className="fixed left-0 top-0 bottom-0 w-[340px] md:w-[360px] z-40 bg-white/95 backdrop-blur-2xl border-r border-slate-200/90 shadow-2xl flex flex-col text-slate-900 pointer-events-auto transition-all duration-300 font-sans">
+    <aside className="fixed left-0 top-0 bottom-0 w-[340px] md:w-[360px] z-40 hidden md:flex bg-white/95 backdrop-blur-2xl border-r border-slate-200/90 shadow-2xl flex-col text-slate-900 pointer-events-auto transition-all duration-300 font-sans">
       {/* 1. Header & Logo */}
       <div className="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
         <div className="flex items-center gap-3">
@@ -156,10 +155,10 @@ export default function AppleMapsLeftPanel({
           </div>
           <div>
             <h1 className="text-lg font-black font-display tracking-tight text-slate-900 leading-none">
-              City Hub
+              Civic Pulse
             </h1>
             <p className="text-xs text-slate-500 font-semibold mt-0.5">
-              {user ? user.displayName || user.email : 'Official Portal'}
+              {user ? user.displayName || user.email : 'Pune civic workspace'}
             </p>
           </div>
         </div>
@@ -173,7 +172,7 @@ export default function AppleMapsLeftPanel({
         </button>
       </div>
 
-      {/* 2. Main Navigation Items (Matching HTML Template) */}
+      {/* 2. Primary navigation */}
       <div className="px-4 py-4 space-y-1.5 border-b border-slate-100">
         <button
           onClick={() => onSelectNavTab('overview')}
@@ -211,17 +210,6 @@ export default function AppleMapsLeftPanel({
           <span>Map Explorer</span>
         </button>
 
-        <button
-          onClick={() => onSelectNavTab('analytics')}
-          className={`w-full px-4 py-3 rounded-full flex items-center gap-3 font-semibold text-xs transition-all ${
-            activeNavTab === 'analytics'
-              ? 'bg-emerald-100 text-emerald-900 shadow-sm border border-emerald-200'
-              : 'text-slate-600 hover:bg-slate-100'
-          }`}
-        >
-          <BarChart3 className="w-4 h-4 text-emerald-600" />
-          <span>Analytics</span>
-        </button>
       </div>
 
       {/* 3. Search & Locality Selector */}
@@ -388,7 +376,7 @@ export default function AppleMapsLeftPanel({
             </button>
           ) : (
             <button
-              onClick={() => router.push('/login')}
+              onClick={() => router.push('/?auth=login')}
               className="flex items-center gap-1 text-emerald-600 hover:text-emerald-700 font-bold transition-colors"
             >
               <LogIn className="w-3.5 h-3.5" />

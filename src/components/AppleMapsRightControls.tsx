@@ -23,7 +23,7 @@ export default function AppleMapsRightControls({
   const [showDisclosureInfo, setShowDisclosureInfo] = useState(false);
 
   return (
-    <div className="fixed top-4 right-4 z-30 flex flex-col items-end gap-2.5 pointer-events-auto">
+    <div className="fixed top-4 right-4 z-30 hidden md:flex flex-col items-end gap-2.5 pointer-events-auto">
       {/* Main Floating Tool Stack (White Minimal Right Dock) */}
       <div className="flex items-center gap-2 bg-white/95 backdrop-blur-2xl border border-slate-200/90 p-1.5 rounded-2xl shadow-xl">
         {/* View Mode Toggle Button (Map / List) */}

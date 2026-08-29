@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import AuthSlideOver from '@/components/AuthSlideOver';
@@ -23,6 +23,15 @@ export default function LandingPage() {
   // Auth Slide-over Drawer State
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
+
+  useEffect(() => {
+    const requestedMode = new URLSearchParams(window.location.search).get('auth');
+    if (requestedMode === 'login' || requestedMode === 'signup') {
+      setAuthMode(requestedMode);
+      setIsAuthOpen(true);
+      window.history.replaceState({}, '', '/');
+    }
+  }, []);
 
   const openAuth = (mode: 'login' | 'signup') => {
     setAuthMode(mode);

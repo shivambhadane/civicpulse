@@ -24,7 +24,7 @@ import {
   findNearbyComplaintsFromStore,
 } from '@/lib/dataStore';
 import { INITIAL_CATEGORIES, INITIAL_DEPARTMENTS } from '@/lib/mockData';
-import { Bell, Home, Shield } from 'lucide-react';
+import { Activity, Home, Megaphone } from 'lucide-react';
 import Link from 'next/link';
 
 export default function DashboardPage() {
@@ -34,11 +34,11 @@ export default function DashboardPage() {
   const [departments] = useState<Department[]>(INITIAL_DEPARTMENTS);
 
   // Nav & Filter State
-  const [activeNavTab, setActiveNavTab] = useState<'overview' | 'my-reports' | 'map' | 'analytics'>('overview');
+  const [activeNavTab, setActiveNavTab] = useState<'overview' | 'my-reports' | 'map'>('map');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
   const [showHotspots, setShowHotspots] = useState<boolean>(true);
-  const [viewMode, setViewMode] = useState<'map' | 'list'>('list');
+  const [viewMode, setViewMode] = useState<'map' | 'list'>('map');
   const [isOfficialMode, setIsOfficialMode] = useState<boolean>(false);
   const [centerCoordinate, setCenterCoordinate] = useState<{ lat: number; lng: number } | undefined>(undefined);
 
@@ -97,7 +97,7 @@ export default function DashboardPage() {
   });
 
   // Handle Nav Tab Selection
-  const handleNavTabSelect = (tab: 'overview' | 'my-reports' | 'map' | 'analytics') => {
+  const handleNavTabSelect = (tab: 'overview' | 'my-reports' | 'map') => {
     setActiveNavTab(tab);
     if (tab === 'overview') {
       setViewMode('list');
@@ -194,12 +194,12 @@ export default function DashboardPage() {
           <span className="text-sm font-extrabold text-slate-950 font-display">Civic Pulse</span>
         </div>
         <div className="flex items-center gap-2">
-          <Link href="/admin" className="text-xs font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-full flex items-center gap-1">
-            <Shield className="w-3 h-3" />
-            <span>Admin</span>
-          </Link>
-          <button className="p-1.5 rounded-full hover:bg-slate-100 text-slate-600">
-            <Bell className="w-4 h-4" />
+          <button onClick={() => setIsActivityDrawerOpen(true)} className="p-2 rounded-xl hover:bg-slate-100 text-slate-600" aria-label="Open my activity">
+            <Activity className="w-4 h-4" />
+          </button>
+          <button onClick={() => setIsReportWizardOpen(true)} className="text-xs font-bold text-white bg-emerald-600 px-3 py-2 rounded-xl flex items-center gap-1 shadow-sm">
+            <Megaphone className="w-3.5 h-3.5" />
+            <span>Report</span>
           </button>
         </div>
       </header>
@@ -272,6 +272,10 @@ export default function DashboardPage() {
                   setIsDetailModalOpen(true);
                 }}
                 onOpenReportWizard={() => setIsReportWizardOpen(true)}
+                onSwitchToMapView={() => {
+                  setActiveNavTab('map');
+                  setViewMode('map');
+                }}
               />
             </div>
           </main>

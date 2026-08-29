@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-labelledby="title desc">
+  <title id="title">Synthetic civic issue evidence</title>
+  <desc id="desc">An illustrated city street with a civic issue marker, used for the Civic Pulse demonstration.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#dbeafe"/><stop offset="1" stop-color="#f8fafc"/></linearGradient>
+    <linearGradient id="road" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#64748b"/><stop offset="1" stop-color="#334155"/></linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/><circle cx="985" cy="115" r="60" fill="#fbbf24" opacity=".75"/>
+  <path d="M0 380h1200v420H0z" fill="url(#road)"/><path d="M0 510 1200 390v58L0 568z" fill="#cbd5e1" opacity=".9"/>
+  <path d="m485 800 232-420h160L690 800z" fill="#475569"/><path d="m574 800 183-420h45L653 800z" fill="#f8fafc" opacity=".7"/>
+  <g fill="#94a3b8"><path d="M82 380V238h128v142zM225 380V170h169v210zM940 380V203h172v177zM778 380V253h137v127z"/></g>
+  <g fill="#e2e8f0"><path d="M106 266h20v36h-20zm46 0h20v36h-20zm100-65h28v44h-28zm54 0h28v44h-28zm54 0h28v44h-28zm610 35h28v42h-28zm58 0h28v42h-28zm58 0h28v42h-28z"/></g>
+  <g transform="translate(560 410)"><circle r="85" fill="#ef4444" opacity=".18"/><circle r="55" fill="#dc2626"/><path d="M0-33 31 23H-31z" fill="white"/><rect x="-5" y="-15" width="10" height="22" rx="5" fill="#dc2626"/><circle cy="15" r="6" fill="#dc2626"/></g>
+  <rect x="38" y="38" width="358" height="72" rx="18" fill="white" opacity=".94"/><text x="66" y="82" font-family="Arial, sans-serif" font-size="26" font-weight="700" fill="#0f172a">Civic Pulse · Demo evidence</text>
+</svg>

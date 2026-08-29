@@ -8,6 +8,13 @@ const requestSchema = z.object({
   image_url: z.string().optional(),
 });
 
+const resultSchema = z.object({
+  category_slug: z.enum(['roads-traffic', 'sanitation-garbage', 'water-drainage', 'electricity-lighting', 'public-safety']),
+  severity: z.enum(['LOW', 'MEDIUM', 'HIGH', 'CRITICAL']),
+  summary: z.string().min(1).max(200),
+  tags: z.array(z.string()).max(8),
+});
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -40,8 +47,8 @@ Return JSON matching schema:
 
         const content = completion.choices[0]?.message?.content;
         if (content) {
-          const aiResult: AIClassificationResult = JSON.parse(content);
-          return NextResponse.json({ success: true, data: aiResult });
+          const aiResult = resultSchema.parse(JSON.parse(content)) as AIClassificationResult;
+          return NextResponse.json({ success: true, data: aiResult, meta: { provider: 'openai', model: 'gpt-4o-mini' } });
         }
       } catch (err) {
         console.warn('OpenAI API call failed, falling back to rule engine:', err);
@@ -83,7 +90,7 @@ Return JSON matching schema:
       tags,
     };
 
-    return NextResponse.json({ success: true, data: result });
+    return NextResponse.json({ success: true, data: result, meta: { provider: 'rule-based' } });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : 'Invalid request payload';
     return NextResponse.json(

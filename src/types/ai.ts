@@ -7,6 +7,8 @@ export interface AIClassificationResult {
   tags: string[];
 }
 
+export type AIProvider = 'openai' | 'rule-based';
+
 export interface AIDepartmentRoutingResult {
   department_code: string;
   department_name: string;

@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
-import { X, MapPin, Upload, Sparkles, AlertCircle, ChevronRight, ArrowLeft, Loader2, ShieldCheck, Check } from 'lucide-react';
+import { X, MapPin, Upload, Sparkles, AlertCircle, ChevronRight, ArrowLeft, Loader2, Check } from 'lucide-react';
 import LocationPickerModal from './LocationPickerModal';
 import { Category, Department, SeverityLevel } from '@/types/database';
-import { AIClassificationResult, AIDepartmentRoutingResult } from '@/types/ai';
+import { AIClassificationResult, AIDepartmentRoutingResult, AIProvider } from '@/types/ai';
 import Image from 'next/image';
 
 import { getOrCreateUserId } from '@/lib/dataStore';
@@ -43,6 +43,7 @@ export default function ReportWizardModal({
   const [isAiAnalyzing, setIsAiAnalyzing] = useState(false);
   const [aiClassification, setAiClassification] = useState<AIClassificationResult | null>(null);
   const [aiRouting, setAiRouting] = useState<AIDepartmentRoutingResult | null>(null);
+  const [aiProvider, setAiProvider] = useState<AIProvider>('rule-based');
 
   // User Overrides on Step 3
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>('');
@@ -93,6 +94,7 @@ export default function ReportWizardModal({
         summary: description.substring(0, 50),
         tags: ['civic'],
       };
+      setAiProvider(classData?.meta?.provider === 'openai' ? 'openai' : 'rule-based');
       setAiClassification(aiClass);
 
       // Set Title if empty
@@ -358,7 +360,9 @@ export default function ReportWizardModal({
                 <div className="p-3.5 rounded-2xl border border-emerald-200 bg-emerald-50 flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Sparkles className="w-4 h-4 text-emerald-600 animate-pulse" />
-                    <span className="text-xs font-bold text-emerald-900">AI Advisor Inference Complete</span>
+                    <span className="text-xs font-bold text-emerald-900">
+                      {aiProvider === 'openai' ? 'OpenAI inference complete' : 'Rule-based demo assistance'}
+                    </span>
                   </div>
                   <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">
                     {Math.round((aiRouting?.confidence_score || 0.94) * 100)}% Confidence

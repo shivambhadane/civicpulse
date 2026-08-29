@@ -1,8 +1,10 @@
 import { Complaint, Hotspot, ComplaintStatus, UpdateSource, NearbyComplaintMatch } from '@/types/database';
 import { INITIAL_COMPLAINTS, INITIAL_HOTSPOTS, INITIAL_CATEGORIES, INITIAL_DEPARTMENTS } from './mockData';
 
-const COMPLAINTS_KEY = 'civicpulse_complaints_v1';
-const HOTSPOTS_KEY = 'civicpulse_hotspots_v1';
+// Bump demo storage keys when the seeded data changes so stale local mock records
+// cannot keep referencing removed remote assets.
+const COMPLAINTS_KEY = 'civicpulse_complaints_v2';
+const HOTSPOTS_KEY = 'civicpulse_hotspots_v2';
 const USER_SUPPORTED_KEY = 'civicpulse_user_supported_v1';
 const USER_ID_KEY = 'civicpulse_anonymous_user_id';
 

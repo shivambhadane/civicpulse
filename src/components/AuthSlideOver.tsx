@@ -24,8 +24,8 @@ export default function AuthSlideOver({
 }: AuthSlideOverProps) {
   const router = useRouter();
   const [isSignUp, setIsSignUp] = useState(initialMode === 'signup');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('testuser@gmail.com');
+  const [password, setPassword] = useState('123456');
   const [fullName, setFullName] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -95,16 +95,15 @@ export default function AuthSlideOver({
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-4 sm:p-6" role="dialog" aria-modal="true" aria-labelledby="auth-modal-title">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm transition-opacity animate-in fade-in duration-300"
+        className="fixed inset-0 bg-slate-950/35 backdrop-blur-md transition-opacity animate-in fade-in duration-200"
         onClick={onClose}
       />
 
-      {/* Slide-over Panel from Right */}
-      <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
-        <div className="w-screen max-w-md bg-white shadow-2xl border-l border-slate-200 p-6 sm:p-8 flex flex-col justify-between relative z-10 animate-in slide-in-from-right duration-300">
+      {/* Centered authentication popup */}
+      <div className="relative z-10 w-full max-w-md rounded-2xl border border-white/70 bg-white p-6 shadow-2xl shadow-slate-950/20 animate-in fade-in zoom-in-95 duration-200 sm:p-8">
           
           {/* Top Header & Close Button */}
           <div className="space-y-6">
@@ -125,7 +124,7 @@ export default function AuthSlideOver({
             </div>
 
             <div className="space-y-1">
-              <h2 className="text-2xl font-black font-display text-slate-950">
+              <h2 id="auth-modal-title" className="text-2xl font-black font-display text-slate-950">
                 {isSignUp ? 'Create your account' : 'Welcome back'}
               </h2>
               <p className="text-xs text-slate-500 font-medium">
@@ -243,8 +242,8 @@ export default function AuthSlideOver({
             </form>
           </div>
 
-          {/* Bottom Switch Mode Link */}
-          <div className="text-center pt-6 border-t border-slate-100">
+          {/* Switch auth mode */}
+          <div className="mt-6 text-center border-t border-slate-100 pt-5">
             <button
               type="button"
               onClick={() => {
@@ -256,8 +255,6 @@ export default function AuthSlideOver({
               {isSignUp ? 'Already have an account? Log in' : "Don't have an account? Sign up"}
             </button>
           </div>
-
-        </div>
       </div>
     </div>
   );

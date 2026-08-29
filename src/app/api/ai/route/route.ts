@@ -9,6 +9,13 @@ const requestSchema = z.object({
   location_name: z.string().optional(),
 });
 
+const resultSchema = z.object({
+  department_code: z.enum(['PMC_ROADS', 'PMC_SANITATION', 'PMC_WATER', 'PMC_ELECTRICAL', 'PMC_SAFETY']),
+  department_name: z.string().min(1).max(150),
+  confidence_score: z.number().min(0.5).max(0.99),
+  reasoning: z.string().min(1).max(300),
+});
+
 const DEPARTMENT_MAPPING: Record<string, { code: string; name: string }> = {
   'roads-traffic': { code: 'PMC_ROADS', name: 'Roads & Maintenance Department' },
   'sanitation-garbage': { code: 'PMC_SANITATION', name: 'Solid Waste Management (Sanitation)' },
@@ -49,8 +56,8 @@ Return JSON matching schema:
 
         const content = completion.choices[0]?.message?.content;
         if (content) {
-          const aiResult: AIDepartmentRoutingResult = JSON.parse(content);
-          return NextResponse.json({ success: true, data: aiResult });
+          const aiResult = resultSchema.parse(JSON.parse(content)) as AIDepartmentRoutingResult;
+          return NextResponse.json({ success: true, data: aiResult, meta: { provider: 'openai', model: 'gpt-4o' } });
         }
       } catch (err) {
         console.warn('OpenAI API call failed, falling back to rule mapping:', err);
@@ -66,7 +73,7 @@ Return JSON matching schema:
       reasoning: `Matched based on civic category domain (${parsed.category_slug}) and jurisdictional jurisdiction rules.`,
     };
 
-    return NextResponse.json({ success: true, data: result });
+    return NextResponse.json({ success: true, data: result, meta: { provider: 'rule-based' } });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : 'Invalid request payload';
     return NextResponse.json(
